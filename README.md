@@ -17,7 +17,7 @@
 </a>
 </div>
 
-OnixIDE is a powerful collaborative online IDE built with Node.js, designed for real-time file synchronization via WebSockets. It's a feature-rich environment perfect for teams working together on the same project.
+OnixIDE is a powerful collaborative online IDE built with Node.js, designed for real-time file synchronization via WebSockets. It's a environment perfect for basic collaborative projects.
 
 ### Key Features
 
@@ -29,8 +29,18 @@ OnixIDE is a powerful collaborative online IDE built with Node.js, designed for 
 - **Draggable panels**: Drag panels for better visibility.
 ---
 
-## Local Development Setup
+### Roadmap(Subject to change)
 
+- [ ] File watching for external edits
+- [ ] File tree icons
+- [ ] Multiple terminal tabs
+- [ ] Git integration
+- [ ] Access management
+- [ ] Synchronized cursors and selections
+
+
+## Local Development Setup
+The code has gone through a lot of rewrites and changes, so it might be a bit messy in places, but it works.
 To get started with local development:
 
 ### Backend:

@@ -53,13 +53,13 @@ function resetTree() {
 	io.emit('getFilesResponse', updatedTree);
 }
 
-var detectChanges = true;
-function watchChanges(path: string) {
-	if (detectChanges) {
-		console.log(detectChanges);
-		console.log(`File changed: ${path}`)
-	}
-}
+// var detectChanges = true;
+// function watchChanges(path: string) {
+// 	if (detectChanges) {
+// 		console.log(detectChanges);
+// 		console.log(`File changed: ${path}`)
+// 	}
+// }
 
 const watcher = chokidar.watch('./project', {
 	ignored: /(^|[\/\\])\../, // Ignore dotfiles (e.g., .git, .DS_Store)
@@ -74,9 +74,9 @@ watcher
 	.on('addDir', (path) => resetTree())
 	.on('unlinkDir', (path) => resetTree())
 	.on('error', (error) => console.error(`Watcher error: ${error}`))
-	.on('change', (path) => {
-		watchChanges(path)
-	});
+	// .on('change', (path) => {
+	// 	watchChanges(path)
+	// });
 
 
 
@@ -395,7 +395,7 @@ io.on('connection', (socket: Socket) => {
 	});
 	socket.on('pushUpdates', (documentName, version, docUpdates) => {
 		try {
-			detectChanges = false;
+			// detectChanges = false;
 			let { updates, pending, doc } = getDocument(documentName);
 			docUpdates = JSON.parse(docUpdates);
 
@@ -419,9 +419,9 @@ io.on('connection', (socket: Socket) => {
 		} catch (error) {
 			console.error('pushUpdates', error);
 		} finally {
-			setTimeout(() => {
-				detectChanges = true;
-			}, 2000);
+			// setTimeout(() => {
+			// 	detectChanges = true;
+			// }, 5000);
 		}
 	});
 

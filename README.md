@@ -102,6 +102,4 @@ This will launch the application with all required services in a production-read
 
 ## License & Usage
 
-All rights reserved – Mark Shapirovskyy.
-
-This project is proprietary and may not be distributed or shared without explicit approval. Unauthorized use, distribution, or modification of this software is prohibited.
+MIT License

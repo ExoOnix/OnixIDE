@@ -1,0 +1,31 @@
+.rootGrid {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    height: 100%;
+}
+
+.fileChooser {
+    padding: 32px 32px 0;
+}
+
+.fileButton {
+    border: 1px solid #ccc;
+    background-color: white;
+    padding: 8px 16px;
+    cursor: pointer;
+}
+
+.treeRoot {
+    box-sizing: border-box;
+    height: 100%;
+    padding: 32px;
+}
+
+.draggingSource {
+    opacity: 0.3;
+}
+
+.dropTarget {
+    background-color: #383a34;
+    border-radius: 5px;
+}

@@ -150,6 +150,18 @@ const EditorComponent = ({ filename, code, version, socket }) => {
         indentUnit.of("\t"),
         basicSetup(),
         ...(filename.substring(filename.lastIndexOf('.') + 1) == "js" ? [langs.javascript()] : []),
+        ...(filename.substring(filename.lastIndexOf('.') + 1) == "ts" ? [langs.typescript()] : []),
+        ...(filename.substring(filename.lastIndexOf('.') + 1) == "tsx" ? [langs.typescript()] : []),
+        ...(filename.substring(filename.lastIndexOf('.') + 1) == "jsx" ? [langs.javascript()] : []),
+
+        ...(filename.substring(filename.lastIndexOf('.') + 1) == "mjs" ? [langs.javascript()] : []),
+        ...(filename.substring(filename.lastIndexOf('.') + 1) == "md" ? [langs.markdown()] : []),
+
+
+        ...(filename.substring(filename.lastIndexOf('.') + 1) == "yaml" ? [langs.yaml()] : []),
+        ...(filename.substring(filename.lastIndexOf('.') + 1) == "yml" ? [langs.yaml()] : []),
+        ...(filename.substring(filename.lastIndexOf('.') + 1) == "json" ? [langs.json()] : []),
+
         ...(filename.substring(filename.lastIndexOf('.') + 1) == "py" ? [langs.python()] : []),
         ...(filename.substring(filename.lastIndexOf('.') + 1) == "cpp" ? [langs.cpp()] : []),
         ...(filename.substring(filename.lastIndexOf('.') + 1) == "go" ? [langs.go()] : []),

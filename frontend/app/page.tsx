@@ -44,7 +44,7 @@ export default function Home() {
       <div className='maincontainer' ref={containerRef} style={{ display: 'flex', height: '100vh' }}>
         <div
           className="file-tree-container"
-          style={{ width: `${treeWidth}px`, minWidth: '100px', overflow: 'auto' }}
+          style={{ width: `${treeWidth}px`, minWidth: '100px', overflow: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
           <FileTree />
         </div>

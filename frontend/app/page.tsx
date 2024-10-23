@@ -15,16 +15,30 @@ export default function Home() {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const terminalRef = useRef<HTMLDivElement | null>(null); // Add this ref
   const socket: any = useSocket();
-  const [editorKey, setEditorKey] = useState(0);
+  const [editorKey, setEditorKey] = useState(filename);
+
+  useEffect(() => {
+    setEditorKey(filename)
+  }, [filename])
 
   useEffect(() => {
     if (!socket) return;
 
     socket.on('resetFile', (relativeFilePath: string) => {
-      console.log(relativeFilePath)
-      setFilename(relativeFilePath)
-      setEditorKey(prevKey => prevKey + 1);
-    })
+      // Improve later
+      console.log(relativeFilePath, useFilenameStore.getState().filename)
+      if (relativeFilePath == useFilenameStore.getState().filename) {
+        console.log(relativeFilePath);
+        setFilename(relativeFilePath);
+        setEditorKey("Temp"); 
+
+
+        setTimeout(() => {
+          setEditorKey(filename);
+        }, 100);
+      }
+    });
+
 
     socket.on('connect_error', (err: any) => {
       console.error('Failed to connect to server:', err);
@@ -87,6 +101,7 @@ export default function Home() {
             style={{ flexGrow: 1, height: '70%', overflow: 'auto', backgroundColor: '#303841' }}
           >
             <Editor key={editorKey} filename={filename} />
+            {editorKey}
           </div>
 
           <div className="terminal-container" style={{ height: '30%', backgroundColor: '#333' }}> { }

@@ -53,13 +53,55 @@ function resetTree() {
 	io.emit('getFilesResponse', updatedTree);
 }
 
-// var detectChanges = true;
-// function watchChanges(path: string) {
-// 	if (detectChanges) {
-// 		console.log(detectChanges);
-// 		console.log(`File changed: ${path}`)
-// 	}
-// }
+var detectChanges = true;
+
+function watchChanges(filePath: string) {
+	if (detectChanges) {
+		console.log(`File changed: ${filePath}`);
+
+		// Get the relative file path within the project
+		const relativeFilePath = path.relative('./project', filePath);
+
+		// Check if the document exists in the document map
+		if (documents.has(relativeFilePath)) {
+			// Read the updated content from the file
+			const fileContent = fs.readFileSync(filePath, 'utf-8');
+
+			// Get the document and reset its content and changes
+			const document = documents.get(relativeFilePath)!;
+			const newDoc = Text.of(fileContent.split('\n'));
+			document.doc = newDoc;
+			document.updates = []; // Reset the ChangeSet (updates) to empty
+			// Update the document map with the new content
+			documents.set(relativeFilePath, { ...document, doc: newDoc });
+			console.log(relativeFilePath)
+			io.emit("resetFile", relativeFilePath)
+		}
+	} else {
+		detectChanges = true;
+	}
+}
+
+
+
+function deleteExternal(filePath: string, isDir: boolean) {
+	resetTree()
+	const relativeFilePath = path.relative('./project', filePath);
+
+	console.log(relativeFilePath)
+
+	if (isDir == true) {
+		documents.forEach((_, docPath) => {
+			// Check if the document path starts with the directory path
+			if (docPath.startsWith(relativeFilePath)) {
+				documents.delete(docPath);
+			}
+		});
+	}
+	else {
+		documents.delete(relativeFilePath);
+	}
+}
 
 const watcher = chokidar.watch('./project', {
 	ignored: /(^|[\/\\])\../, // Ignore dotfiles (e.g., .git, .DS_Store)
@@ -70,13 +112,13 @@ const watcher = chokidar.watch('./project', {
 
 watcher
 	.on('add', (path) => resetTree())
-	.on('unlink', (path) => resetTree())
+	.on('unlink', (path) => deleteExternal(path, false))
 	.on('addDir', (path) => resetTree())
-	.on('unlinkDir', (path) => resetTree())
+	.on('unlinkDir', (path) => deleteExternal(path, true))
 	.on('error', (error) => console.error(`Watcher error: ${error}`))
-	// .on('change', (path) => {
-	// 	watchChanges(path)
-	// });
+	.on('change', (path) => {
+		watchChanges(path)
+	});
 
 
 
@@ -395,7 +437,7 @@ io.on('connection', (socket: Socket) => {
 	});
 	socket.on('pushUpdates', (documentName, version, docUpdates) => {
 		try {
-			// detectChanges = false;
+			detectChanges = false;
 			let { updates, pending, doc } = getDocument(documentName);
 			docUpdates = JSON.parse(docUpdates);
 
@@ -418,10 +460,6 @@ io.on('connection', (socket: Socket) => {
 			}
 		} catch (error) {
 			console.error('pushUpdates', error);
-		} finally {
-			// setTimeout(() => {
-			// 	detectChanges = true;
-			// }, 5000);
 		}
 	});
 

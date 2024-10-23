@@ -84,6 +84,25 @@ function watchChanges(filePath: string) {
 
 
 
+function deleteExternal(filePath: string, isDir: boolean) {
+	resetTree()
+	const relativeFilePath = path.relative('./project', filePath);
+
+	console.log(relativeFilePath)
+
+	if (isDir == true) {
+		documents.forEach((_, docPath) => {
+			// Check if the document path starts with the directory path
+			if (docPath.startsWith(relativeFilePath)) {
+				documents.delete(docPath);
+			}
+		});
+	}
+	else {
+		documents.delete(relativeFilePath);
+	}
+}
+
 const watcher = chokidar.watch('./project', {
 	ignored: /(^|[\/\\])\../, // Ignore dotfiles (e.g., .git, .DS_Store)
 	persistent: true,
@@ -93,9 +112,9 @@ const watcher = chokidar.watch('./project', {
 
 watcher
 	.on('add', (path) => resetTree())
-	.on('unlink', (path) => resetTree())
+	.on('unlink', (path) => deleteExternal(path, false))
 	.on('addDir', (path) => resetTree())
-	.on('unlinkDir', (path) => resetTree())
+	.on('unlinkDir', (path) => deleteExternal(path, true))
 	.on('error', (error) => console.error(`Watcher error: ${error}`))
 	.on('change', (path) => {
 		watchChanges(path)

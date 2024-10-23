@@ -101,7 +101,6 @@ export default function Home() {
             style={{ flexGrow: 1, height: '70%', overflow: 'auto', backgroundColor: '#303841' }}
           >
             <Editor key={editorKey} filename={filename} />
-            {editorKey}
           </div>
 
           <div className="terminal-container" style={{ height: '30%', backgroundColor: '#333' }}> { }

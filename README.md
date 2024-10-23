@@ -31,7 +31,7 @@ OnixIDE is a powerful collaborative online IDE built with Node.js, designed for 
 
 ### Roadmap(Subject to change)
 
-- [ ] File watching for external edits
+- [x] File watching for external edits
 - [ ] File tree icons
 - [ ] Multiple terminal tabs
 - [ ] Git integration

@@ -30,7 +30,7 @@ export const TypeIcon = (props) => {
 
     // Conditional rendering based on file extension
     const invertedLanguages = ["md", "rs", "sh"]; // Add the extensions for the languages to invert
-    const invertIcon = invertedLanguages.includes(extension.toLowerCase()); // Check if the current extension should be inverted
+    const invertIcon = extension && invertedLanguages.includes(extension.toLowerCase()); // Check if the current extension should be inverted
 
     // Conditional rendering based on file extension
     if (droppable) {
@@ -39,7 +39,7 @@ export const TypeIcon = (props) => {
 
     const iconStyle = invertIcon ? { filter: 'invert(1)' } : {}; // Inline style for inversion
 
-    switch (extension.toLowerCase()) {
+    switch (extension?.toLowerCase()) {
         case "js":
             return <JavascriptOriginal width={"15px"} style={iconStyle} />;
         case "jsx":

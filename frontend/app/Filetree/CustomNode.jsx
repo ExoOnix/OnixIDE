@@ -198,7 +198,14 @@ export const CustomNode = (props) => {
                             {droppable && <ChevronRight />}
                         </div>
                         <div className="typeIconWrapper" onClick={handleClick}>
-                            <TypeIcon droppable={droppable} />
+                            <TypeIcon
+                                droppable={droppable}
+                                extension={
+                                    (props.node.text.includes('.') && props.node.text.split('.').pop() !== '' && !props.node.text.startsWith('.'))
+                                        ? props.node.text.split('.').pop()
+                                        : 'None'
+                                }
+                            />
                         </div>
                         <div className="labelGridItem" onClick={handleClick}>
                             <span>{props.node.text}</span>

@@ -12,6 +12,7 @@ import { receiveUpdates, sendableUpdates, collab, getSyncedVersion } from '@code
 import { io } from 'socket.io-client';
 import { emitGetFiles } from '../Filetree/Tree';
 import { loadLanguage, langNames, langs } from '@uiw/codemirror-extensions-langs';
+import { loadLanguageExtensions } from './extensions';
 
 
 // Helper functions
@@ -153,28 +154,10 @@ const EditorComponent = ({ filename, code, version, socket }) => {
     const extensions = useMemo(() => [
         indentUnit.of("\t"),
         basicSetup(),
-        ...(filename.substring(filename.lastIndexOf('.') + 1) == "js" ? [langs.javascript()] : []),
-        ...(filename.substring(filename.lastIndexOf('.') + 1) == "ts" ? [langs.typescript()] : []),
-        ...(filename.substring(filename.lastIndexOf('.') + 1) == "tsx" ? [langs.typescript()] : []),
-        ...(filename.substring(filename.lastIndexOf('.') + 1) == "jsx" ? [langs.javascript()] : []),
-
-        ...(filename.substring(filename.lastIndexOf('.') + 1) == "mjs" ? [langs.javascript()] : []),
-        ...(filename.substring(filename.lastIndexOf('.') + 1) == "md" ? [langs.markdown()] : []),
-
-
-        ...(filename.substring(filename.lastIndexOf('.') + 1) == "yaml" ? [langs.yaml()] : []),
-        ...(filename.substring(filename.lastIndexOf('.') + 1) == "yml" ? [langs.yaml()] : []),
-        ...(filename.substring(filename.lastIndexOf('.') + 1) == "json" ? [langs.json()] : []),
-
-        ...(filename.substring(filename.lastIndexOf('.') + 1) == "py" ? [langs.python()] : []),
-        ...(filename.substring(filename.lastIndexOf('.') + 1) == "cpp" ? [langs.cpp()] : []),
-        ...(filename.substring(filename.lastIndexOf('.') + 1) == "go" ? [langs.go()] : []),
-        // html css
-        ...(filename.substring(filename.lastIndexOf('.') + 1) == "html" ? [langs.html()] : []),
-        ...(filename.substring(filename.lastIndexOf('.') + 1) == "css" ? [langs.css()] : []),
-        ...(filename.substring(filename.lastIndexOf('.') + 1) == "scss" ? [langs.sass()] : []),
+        ...loadLanguageExtensions(filename),  // Load extensions from helper
         ...peerExtension(socket, filename, version)
     ], [socket, filename, version]);
+
 
     return (
         <div>

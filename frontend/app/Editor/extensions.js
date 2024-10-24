@@ -7,12 +7,14 @@ export const loadLanguageExtensions = (filename) => {
     switch (ext) {
         case 'js':
         case 'mjs':
-        case 'jsx':
             return [langs.javascript()];
+        case 'jsx':
+            return [langs.jsx()];
 
         case 'ts':
-        case 'tsx':
             return [langs.typescript()];
+        case 'tsx':
+            return [langs.tsx()];
 
         case 'md':
         case 'markdown':

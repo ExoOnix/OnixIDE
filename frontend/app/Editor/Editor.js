@@ -130,6 +130,7 @@ const Home = ({ filename }) => {
 
         socket.on('connect', handleConnect);
 
+
         if (socket.connected) {
             handleConnect();
         }

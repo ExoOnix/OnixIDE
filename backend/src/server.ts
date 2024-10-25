@@ -288,35 +288,40 @@ interface Document {
 	updates: Update[],
 	doc: Text,
 	pending: ((value: any) => void)[],
+	lastAccessed: number
 }
 
 let documents = new Map<string, Document>();
 documents.set('', {
 	updates: [],
 	pending: [],
-	doc: Text.of(['\n\n\nStarting doc!\n\n\n'])
+	doc: Text.of(['\n\n\nStarting doc!\n\n\n']),
+	lastAccessed: Date.now()
 });
 
 function clearDocuments() {
-	documents.clear();
-	console.log('Documents map cleared:', documents);
+	const now = Date.now();
+	documents.forEach((doc, name) => {
+		if (now - doc.lastAccessed > 1000 * 60 * 5) {
+			documents.delete(name);
+			io.emit("resetFile", name)
+		}
+	});
 }
 
-// Set an interval to clear the map every 2 minutes (120000 milliseconds)
-setInterval(clearDocuments, 1000 * 10);
+setInterval(clearDocuments, 1000 * 60 * 1);
+
 
 function getDocument(name: string): Document {
 	const fullPath = path.join('./project', name);
 
 	if (documents.has(name)) return documents.get(name)!;
 
-	io.emit("resetChangeset", name)
-	console.log("Emmited", name)
+
 	let fileContent = '';
 	try {
 		if (fs.existsSync(fullPath)) {
 			fileContent = fs.readFileSync(fullPath, 'utf-8');
-			console.log(fileContent)
 		} else {
 			fs.writeFileSync(fullPath, `\n\n\nHello World from ${name}\n\n\n`);
 			fileContent = `\n\n\nHello World from ${name}\n\n\n`;
@@ -328,7 +333,8 @@ function getDocument(name: string): Document {
 	const documentContent: Document = {
 		updates: [],
 		pending: [],
-		doc: Text.of(fileContent.split('\n'))
+		doc: Text.of(fileContent.split('\n')),
+		lastAccessed: Date.now()
 	};
 
 	documents.set(name, documentContent);
@@ -440,7 +446,7 @@ io.on('connection', (socket: Socket) => {
 				socket.emit("pullUpdateResponse", JSON.stringify(updates.slice(version)));
 			} else {
 				pending.push((updates) => { socket.emit('pullUpdateResponse', JSON.stringify(updates.slice(version))); });
-				documents.set(documentName, { updates, pending, doc });
+				documents.set(documentName, { updates, pending, doc, lastAccessed: Date.now() });
 			}
 		} catch (error) {
 			console.error('pullUpdates', error);
@@ -463,7 +469,7 @@ io.on('connection', (socket: Socket) => {
 					doc = changes.apply(doc);
 				}
 
-				documents.set(documentName, { updates, pending, doc });
+				documents.set(documentName, { updates, pending, doc, lastAccessed: Date.now() });
 				// Write the updated document to the actual file
 				const fullPath = path.join('./project', documentName);
 				fs.writeFileSync(fullPath, doc.toString());

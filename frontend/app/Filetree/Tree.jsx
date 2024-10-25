@@ -40,7 +40,7 @@ export const FileTree = () => {
 
     useEffect(() => {
         // Any additional actions based on filename changes
-        console.log('Current filename:', filename);
+        // console.log('Current filename:', filename);
     }, [filename]);
     const getNodePath = (nodeId, tree) => {
         const path = [];

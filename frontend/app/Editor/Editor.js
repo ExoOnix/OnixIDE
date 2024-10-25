@@ -130,6 +130,9 @@ const Home = ({ filename }) => {
 
         socket.on('connect', handleConnect);
 
+        socket.on('resetChangeset', (filepath) => {
+            console.log(filepath)
+        });
         if (socket.connected) {
             handleConnect();
         }

@@ -297,15 +297,26 @@ documents.set('', {
 	doc: Text.of(['\n\n\nStarting doc!\n\n\n'])
 });
 
+function clearDocuments() {
+	documents.clear();
+	console.log('Documents map cleared:', documents);
+}
+
+// Set an interval to clear the map every 2 minutes (120000 milliseconds)
+setInterval(clearDocuments, 1000 * 10);
+
 function getDocument(name: string): Document {
 	const fullPath = path.join('./project', name);
 
 	if (documents.has(name)) return documents.get(name)!;
 
+	io.emit("resetChangeset", name)
+	console.log("Emmited", name)
 	let fileContent = '';
 	try {
 		if (fs.existsSync(fullPath)) {
 			fileContent = fs.readFileSync(fullPath, 'utf-8');
+			console.log(fileContent)
 		} else {
 			fs.writeFileSync(fullPath, `\n\n\nHello World from ${name}\n\n\n`);
 			fileContent = `\n\n\nHello World from ${name}\n\n\n`;
@@ -438,6 +449,8 @@ io.on('connection', (socket: Socket) => {
 	socket.on('pushUpdates', (documentName, version, docUpdates) => {
 		try {
 			detectChanges = false;
+
+
 			let { updates, pending, doc } = getDocument(documentName);
 			docUpdates = JSON.parse(docUpdates);
 

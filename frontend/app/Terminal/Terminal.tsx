@@ -24,7 +24,6 @@ export default function Terminal() {
 
     const removeTerminal = (id: number) => {
         setTerminals((prev) => prev.filter(terminal => terminal.id !== id));
-        // If the removed terminal is active, switch to another terminal
         if (id === activeTerminal && terminals.length > 1) {
             const remainingTerminals = terminals.filter(terminal => terminal.id !== id);
             setActiveTerminal(remainingTerminals[0]?.id ?? null);
@@ -37,60 +36,69 @@ export default function Terminal() {
                 onClick={addTerminal}
                 style={{
                     position: 'absolute',
-                    top: '10px',
+                    top: '6px',
                     right: '10px',
                     zIndex: 1000,
-                    padding: '10px 15px',
-                    backgroundColor: '#007bff',
-                    color: '#fff',
+                    padding: '8px 12px',
+                    backgroundColor: '#444',
+                    color: '#e0e0e0',
                     border: 'none',
-                    borderRadius: '5px',
-                    cursor: 'pointer'
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    fontSize: '12px',
                 }}
             >
                 New Terminal
             </button>
             <div style={{ display: 'flex', overflowX: 'auto', padding: '10px' }}>
                 {terminals.map((terminal) => (
-                    <div key={terminal.id} style={{ display: 'flex', alignItems: 'center', marginRight: '10px' }}>
+                    <div key={terminal.id} style={{ display: 'flex', alignItems: 'center' }}>
                         <button
                             onClick={() => setActiveTerminal(terminal.id)}
                             style={{
-                                backgroundColor: terminal.id === activeTerminal ? '#007bff' : '#6c757d',
-                                color: '#fff',
+                                backgroundColor: terminal.id === activeTerminal ? '#555' : '#777',
+                                color: '#e0e0e0',
                                 border: 'none',
-                                borderRadius: '3px',
+                                // borderRadius: '3px',
                                 cursor: 'pointer',
-                                padding: '5px 10px'
+                                padding: '4px 8px',
+                                fontSize: '11px',
+                                transition: 'background-color 0.2s',
                             }}
                         >
-                            Terminal {terminal.id}
+                            Terminal
                         </button>
                         <button
                             onClick={() => removeTerminal(terminal.id)}
                             style={{
-                                backgroundColor: '#dc3545',
-                                color: '#fff',
+                                backgroundColor: '#999',
+                                color: '#e0e0e0',
                                 border: 'none',
-                                borderRadius: '3px',
+                                // borderRadius: '3px',
                                 cursor: 'pointer',
-                                padding: '5px',
-                                marginLeft: '5px'
+                                padding: '4px',
+                                fontSize: '11px',
+                                transition: 'background-color 0.2s',
+                                marginRight: "4px"
                             }}
                         >
-                            Close
+                            ✕
                         </button>
                     </div>
                 ))}
             </div>
-            <div style={{ height: 'calc(100% - 70px)', overflowY: 'auto' }}>
-                {terminals.map((terminal) =>
-                    terminal.id === activeTerminal ? (
-                        <div key={terminal.id} style={{ height: '100%' }}>
-                            <TerminalComponent />
-                        </div>
-                    ) : null
-                )}
+            <div style={{ height: 'calc(100% - 46px)' }}>
+                {terminals.map((terminal) => (
+                    <div
+                        key={terminal.id}
+                        style={{
+                            display: terminal.id === activeTerminal ? 'block' : 'none',
+                            // height: '100%',
+                        }}
+                    >
+                        <TerminalComponent />
+                    </div>
+                ))}
             </div>
         </div>
     );

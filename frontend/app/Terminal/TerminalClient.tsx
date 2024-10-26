@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import { useSocket } from '../Editor/Editor';
 
-let handleResize: () => void; 
+let handleResize: () => void;
 
-const initHandleResize = (fitAddon, socket, terminal) => {
+const initHandleResize = (fitAddon: any, socket: any, terminal: any) => {
     if (fitAddon) {
         fitAddon.fit();
-        const { cols, rows } = terminal;
+        const { cols, rows } = terminal!;
         console.log(cols, rows);
         socket.emit('terminal.resize', cols, rows);
     }
@@ -14,10 +14,10 @@ const initHandleResize = (fitAddon, socket, terminal) => {
 
 export default function TerminalClient() {
     const terminalRef = useRef<HTMLDivElement>(null);
-    const fitAddon = useRef(null);
+    const fitAddon = useRef<any>(null);
     const [isInitialized, setIsInitialized] = useState(false);
-    const socket = useSocket();
-    const terminal = useRef(null);
+    const socket: any = useSocket();
+    const terminal = useRef<any>(null);
 
     useEffect(() => {
         const loadTerminal = async () => {
@@ -38,14 +38,15 @@ export default function TerminalClient() {
                 fitAddon.current.fit();
                 setIsInitialized(true);
 
-                const handleResize = () => initHandleResize(fitAddon.current, socket, terminal.current);
-                window.addEventListener('resize', handleResize);
+                handleResize = () => initHandleResize(fitAddon.current, socket, terminal.current);
 
-                socket.on("terminal.incomingData", (data) => {
+                window.addEventListener('resize', handleResize);
+                handleResize()
+                socket.on("terminal.incomingData", (data: string) => {
                     terminal.current?.write(data);
                 });
 
-                terminal.current.onData((data) => {
+                terminal.current.onData((data: any) => {
                     socket.emit("terminal.keystroke", data);
                 });
 
@@ -69,3 +70,6 @@ export default function TerminalClient() {
         ></div>
     );
 }
+
+
+export { handleResize };

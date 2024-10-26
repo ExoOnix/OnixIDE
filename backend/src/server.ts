@@ -591,6 +591,7 @@ io.on('connection', (socket: Socket) => {
 	// Clean up the pty process on disconnect
 	socket.on('disconnect', () => {
 		ptyProcess.kill(); // Properly close the PTY process
+		console.log("del")
 	});
 
 });

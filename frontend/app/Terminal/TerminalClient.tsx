@@ -40,8 +40,13 @@ export default function TerminalClient() {
 
                 handleResize = () => initHandleResize(fitAddon.current, socket, terminal.current);
 
-                window.addEventListener('resize', handleResize);
-                handleResize()
+                // Use ResizeObserver instead of window resize listener
+                const resizeObserver = new ResizeObserver(handleResize);
+                if (terminalRef.current) {
+                    resizeObserver.observe(terminalRef.current);
+                }
+                // handleResize(); // Call once to initialize
+
                 socket.on("terminal.incomingData", (data: string) => {
                     terminal.current?.write(data);
                 });
@@ -51,7 +56,7 @@ export default function TerminalClient() {
                 });
 
                 return () => {
-                    window.removeEventListener('resize', handleResize);
+                    resizeObserver.disconnect(); // Clean up observer
                     terminal.current?.dispose();
                     socket.off("terminal.incomingData");
                 };
@@ -70,6 +75,5 @@ export default function TerminalClient() {
         ></div>
     );
 }
-
 
 export { handleResize };

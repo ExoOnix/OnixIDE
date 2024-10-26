@@ -93,7 +93,7 @@ export default function Terminal() {
                         key={terminal.id}
                         style={{
                             display: terminal.id === activeTerminal ? 'block' : 'none',
-                            // height: '100%',
+                            height: '100%',
                         }}
                     >
                         <TerminalComponent />

@@ -5,7 +5,6 @@ import Editor from './Editor/Editor';
 import FileTree from './Filetree/Tree';
 import { useFilenameStore } from './stores/filenameStore';
 import Terminal from './Terminal/Terminal'
-import { handleResize } from './Terminal/TerminalClient'
 import { useSocket } from './Editor/Editor';
 
 export default function Home() {
@@ -65,9 +64,7 @@ export default function Home() {
       const containerRect = containerRef.current.getBoundingClientRect();
       const newWidth = event.clientX - containerRect.left;
       setTreeWidth(Math.max(100, newWidth));
-
-      handleResize()
-    }
+        }
   };
 
   const stopResizing = () => {

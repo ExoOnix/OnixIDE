@@ -3,25 +3,25 @@ import { useSocket } from '../Editor/Editor';
 
 let handleResize: () => void; 
 
-const initHandleResize = (fitAddon: any, socket: any, terminal: any) => {
+const initHandleResize = (fitAddon, socket, terminal) => {
     if (fitAddon) {
         fitAddon.fit();
-        const { cols, rows } = terminal!;
+        const { cols, rows } = terminal;
         console.log(cols, rows);
-        socket.emit('terminal.resize', cols, rows); 
+        socket.emit('terminal.resize', cols, rows);
     }
 };
 
 export default function TerminalClient() {
     const terminalRef = useRef<HTMLDivElement>(null);
-    const fitAddon = useRef<any>(null);
+    const fitAddon = useRef(null);
     const [isInitialized, setIsInitialized] = useState(false);
-    const socket: any = useSocket();
-    const terminal = useRef<any>(null);
+    const socket = useSocket();
+    const terminal = useRef(null);
 
     useEffect(() => {
         const loadTerminal = async () => {
-            if (typeof window === 'undefined') return; 
+            if (typeof window === 'undefined') return;
 
             const { Terminal: XTerm } = await import('xterm');
             const { FitAddon } = await import('xterm-addon-fit');
@@ -38,15 +38,14 @@ export default function TerminalClient() {
                 fitAddon.current.fit();
                 setIsInitialized(true);
 
-                handleResize = () => initHandleResize(fitAddon.current, socket, terminal.current);
-
+                const handleResize = () => initHandleResize(fitAddon.current, socket, terminal.current);
                 window.addEventListener('resize', handleResize);
 
-                socket.on("terminal.incomingData", (data: string) => {
+                socket.on("terminal.incomingData", (data) => {
                     terminal.current?.write(data);
                 });
 
-                terminal.current.onData((data: any) => {
+                terminal.current.onData((data) => {
                     socket.emit("terminal.keystroke", data);
                 });
 
@@ -70,6 +69,3 @@ export default function TerminalClient() {
         ></div>
     );
 }
-
-
-export { handleResize };

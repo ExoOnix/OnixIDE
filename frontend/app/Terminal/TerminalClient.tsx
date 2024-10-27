@@ -1,7 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, forwardRef, useImperativeHandle } from 'react';
 import { useSocket } from '../Editor/Editor';
-
-let handleResize: () => void;
 
 const initHandleResize = (fitAddon: any, socket: any, terminal: any) => {
     if (fitAddon) {
@@ -12,12 +10,18 @@ const initHandleResize = (fitAddon: any, socket: any, terminal: any) => {
     }
 };
 
-export default function TerminalClient() {
+const TerminalClient = forwardRef((_, ref) => {
     const terminalRef = useRef<HTMLDivElement>(null);
     const fitAddon = useRef<any>(null);
     const [isInitialized, setIsInitialized] = useState(false);
     const socket: any = useSocket();
     const terminal = useRef<any>(null);
+
+    useImperativeHandle(ref, () => ({
+        resize: () => {
+            initHandleResize(fitAddon.current, socket, terminal.current);
+        },
+    }));
 
     useEffect(() => {
         const loadTerminal = async () => {
@@ -38,14 +42,10 @@ export default function TerminalClient() {
                 fitAddon.current.fit();
                 setIsInitialized(true);
 
-                handleResize = () => initHandleResize(fitAddon.current, socket, terminal.current);
-
-                // Use ResizeObserver instead of window resize listener
-                const resizeObserver = new ResizeObserver(handleResize);
-                if (terminalRef.current) {
-                    resizeObserver.observe(terminalRef.current);
-                }
-                // handleResize(); // Call once to initialize
+                // Call resize function on window resize
+                const handleResize = () => initHandleResize(fitAddon.current, socket, terminal.current);
+                window.addEventListener('resize', handleResize);
+                handleResize(); // Call once to initialize
 
                 socket.on("terminal.incomingData", (data: string) => {
                     terminal.current?.write(data);
@@ -56,7 +56,7 @@ export default function TerminalClient() {
                 });
 
                 return () => {
-                    resizeObserver.disconnect(); // Clean up observer
+                    window.removeEventListener('resize', handleResize); // Clean up listener
                     terminal.current?.dispose();
                     socket.off("terminal.incomingData");
                 };
@@ -74,6 +74,6 @@ export default function TerminalClient() {
             style={{ width: '100%', height: '100%', backgroundColor: 'black' }}
         ></div>
     );
-}
+});
 
-export { handleResize };
+export default TerminalClient;

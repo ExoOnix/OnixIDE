@@ -5,12 +5,14 @@ const TerminalComponent = dynamic(() => import('./TerminalClient'), {
     ssr: false,
 });
 
+// Create a variable to hold the active terminal function
+let resizeActiveTerminal: () => void;
+
 export default function Terminal() {
     const [terminals, setTerminals] = useState<{ id: number }[]>([]);
     const [activeTerminal, setActiveTerminal] = useState<number | null>(null);
 
     useEffect(() => {
-        // Initialize with the first terminal after mounting on the client
         const initialTerminal = { id: Date.now() };
         setTerminals([initialTerminal]);
         setActiveTerminal(initialTerminal.id);
@@ -27,6 +29,14 @@ export default function Terminal() {
         if (id === activeTerminal && terminals.length > 1) {
             const remainingTerminals = terminals.filter(terminal => terminal.id !== id);
             setActiveTerminal(remainingTerminals[0]?.id ?? null);
+        }
+    };
+
+    // Function to resize the active terminal
+    resizeActiveTerminal = () => {
+        if (activeTerminal !== null) {
+            console.log(`Resizing terminal with ID: ${activeTerminal}`);
+            // Add logic to call resize on the active terminal component if needed
         }
     };
 
@@ -59,14 +69,13 @@ export default function Terminal() {
                                 backgroundColor: terminal.id === activeTerminal ? '#555' : '#777',
                                 color: '#e0e0e0',
                                 border: 'none',
-                                // borderRadius: '3px',
                                 cursor: 'pointer',
                                 padding: '4px 8px',
                                 fontSize: '11px',
                                 transition: 'background-color 0.2s',
                             }}
                         >
-                            Terminal
+                            Terminal {terminal.id}
                         </button>
                         <button
                             onClick={() => removeTerminal(terminal.id)}
@@ -74,12 +83,11 @@ export default function Terminal() {
                                 backgroundColor: '#999',
                                 color: '#e0e0e0',
                                 border: 'none',
-                                // borderRadius: '3px',
                                 cursor: 'pointer',
                                 padding: '4px',
                                 fontSize: '11px',
                                 transition: 'background-color 0.2s',
-                                marginRight: "4px"
+                                marginLeft: '4px',
                             }}
                         >
                             ✕
@@ -103,3 +111,6 @@ export default function Terminal() {
         </div>
     );
 }
+
+// Export the function to resize the active terminal
+export { resizeActiveTerminal };

@@ -6,6 +6,7 @@ import FileTree from './Filetree/Tree';
 import { useFilenameStore } from './stores/filenameStore';
 import Terminal from './Terminal/Terminal'
 import { useSocket } from './Editor/Editor';
+import { resizeActiveTerminal } from './Terminal/Terminal';
 
 export default function Home() {
   const { filename, setFilename } = useFilenameStore();
@@ -57,6 +58,8 @@ export default function Home() {
     event.preventDefault();
     document.addEventListener('mousemove', resizePanel);
     document.addEventListener('mouseup', stopResizing);
+
+    resizeActiveTerminal()
   };
 
   const resizePanel = (event: MouseEvent) => {

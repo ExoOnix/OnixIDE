@@ -94,7 +94,7 @@ export default function Terminal() {
                                 padding: '4px',
                                 fontSize: '11px',
                                 transition: 'background-color 0.2s',
-                                marginLeft: '4px',
+                                marginRight: '6px',
                             }}
                         >
                             ✕

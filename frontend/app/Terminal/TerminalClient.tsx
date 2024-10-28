@@ -1,27 +1,38 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { useSocket } from '../Editor/Editor';
-
-let handleResize: () => void; 
+import { terminalEvents } from './Terminal';
 
 const initHandleResize = (fitAddon: any, socket: any, terminal: any) => {
     if (fitAddon) {
         fitAddon.fit();
         const { cols, rows } = terminal!;
-        console.log(cols, rows);
-        socket.emit('terminal.resize', cols, rows); 
+        socket.emit('terminal.resize', cols, rows);
     }
 };
 
-export default function TerminalClient() {
+export default function TerminalClient({ terminalId }: { terminalId: any }) {
     const terminalRef = useRef<HTMLDivElement>(null);
     const fitAddon = useRef<any>(null);
     const [isInitialized, setIsInitialized] = useState(false);
     const socket: any = useSocket();
     const terminal = useRef<any>(null);
 
+    // Memoized handleResize function
+    const handleResize = useCallback(() => {
+        if (fitAddon.current && terminal.current) {
+            initHandleResize(fitAddon.current, socket, terminal.current);
+        }
+    }, [socket]);
+
+    terminalEvents.on('resize', (id) => {
+        if (id === terminalId && terminalRef) {
+            handleResize();
+        }
+    });
+
     useEffect(() => {
         const loadTerminal = async () => {
-            if (typeof window === 'undefined') return; 
+            if (typeof window === 'undefined') return;
 
             const { Terminal: XTerm } = await import('xterm');
             const { FitAddon } = await import('xterm-addon-fit');
@@ -38,10 +49,7 @@ export default function TerminalClient() {
                 fitAddon.current.fit();
                 setIsInitialized(true);
 
-                handleResize = () => initHandleResize(fitAddon.current, socket, terminal.current);
-
                 window.addEventListener('resize', handleResize);
-
                 socket.on("terminal.incomingData", (data: string) => {
                     terminal.current?.write(data);
                 });
@@ -49,6 +57,8 @@ export default function TerminalClient() {
                 terminal.current.onData((data: any) => {
                     socket.emit("terminal.keystroke", data);
                 });
+
+                handleResize()
 
                 return () => {
                     window.removeEventListener('resize', handleResize);
@@ -61,7 +71,7 @@ export default function TerminalClient() {
         const timeoutId = setTimeout(loadTerminal, 100);
 
         return () => clearTimeout(timeoutId);
-    }, [socket]);
+    }, [socket, handleResize]);
 
     return (
         <div
@@ -70,6 +80,3 @@ export default function TerminalClient() {
         ></div>
     );
 }
-
-
-export { handleResize };

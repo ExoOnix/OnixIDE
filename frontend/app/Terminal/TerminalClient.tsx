@@ -1,14 +1,11 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { useSocket } from '../Editor/Editor';
 import { terminalEvents } from './Terminal';
-
-let handleResize: () => void;
 
 const initHandleResize = (fitAddon: any, socket: any, terminal: any) => {
     if (fitAddon) {
         fitAddon.fit();
         const { cols, rows } = terminal!;
-        console.log(cols, rows);
         socket.emit('terminal.resize', cols, rows);
     }
 };
@@ -19,6 +16,19 @@ export default function TerminalClient({ terminalId }: { terminalId: any }) {
     const [isInitialized, setIsInitialized] = useState(false);
     const socket: any = useSocket();
     const terminal = useRef<any>(null);
+
+    // Memoized handleResize function
+    const handleResize = useCallback(() => {
+        if (fitAddon.current && terminal.current) {
+            initHandleResize(fitAddon.current, socket, terminal.current);
+        }
+    }, [socket]);
+
+    terminalEvents.on('resize', (id) => {
+        if (id === terminalId && terminalRef) {
+            handleResize();
+        }
+    });
 
     useEffect(() => {
         const loadTerminal = async () => {
@@ -39,16 +49,7 @@ export default function TerminalClient({ terminalId }: { terminalId: any }) {
                 fitAddon.current.fit();
                 setIsInitialized(true);
 
-                handleResize = () => initHandleResize(fitAddon.current, socket, terminal.current);
-
                 window.addEventListener('resize', handleResize);
-                terminalEvents.on('resize', (id) => {
-                    console.log(`resize ${id} id ${terminalId}`);
-                    if (id == terminalId) {
-                        handleResize()
-                    }
-                });
-
                 socket.on("terminal.incomingData", (data: string) => {
                     terminal.current?.write(data);
                 });
@@ -68,7 +69,7 @@ export default function TerminalClient({ terminalId }: { terminalId: any }) {
         const timeoutId = setTimeout(loadTerminal, 100);
 
         return () => clearTimeout(timeoutId);
-    }, [socket]);
+    }, [socket, handleResize]);
 
     return (
         <div
@@ -77,6 +78,3 @@ export default function TerminalClient({ terminalId }: { terminalId: any }) {
         ></div>
     );
 }
-
-
-export { handleResize };

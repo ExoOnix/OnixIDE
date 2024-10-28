@@ -15,6 +15,9 @@ export default function Terminal() {
     const [activeTerminal, setActiveTerminal] = useState<number | null>(null);
 
     useEffect(() => {
+        terminalEvents.emit('resize', activeTerminal);
+    }, [activeTerminal])
+    useEffect(() => {
         const initialTerminal = { id: Date.now() };
         setTerminals([initialTerminal]);
         setActiveTerminal(initialTerminal.id);
@@ -38,7 +41,7 @@ export default function Terminal() {
     // Function to resize the active terminal
     resizeActiveTerminal = () => {
         if (activeTerminal !== null) {
-            console.log(`Resizing terminal with ID: ${activeTerminal}`);
+            // console.log(`Resizing terminal with ID: ${activeTerminal}`);
             terminalEvents.emit('resize', activeTerminal);
 
         }

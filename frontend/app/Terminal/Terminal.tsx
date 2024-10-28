@@ -1,5 +1,6 @@
 import dynamic from 'next/dynamic';
 import { useState, useEffect } from 'react';
+import EventEmitter from 'events';
 
 const TerminalComponent = dynamic(() => import('./TerminalClient'), {
     ssr: false,
@@ -7,6 +8,7 @@ const TerminalComponent = dynamic(() => import('./TerminalClient'), {
 
 // Create a variable to hold the active terminal function
 let resizeActiveTerminal: () => void;
+export const terminalEvents = new EventEmitter();
 
 export default function Terminal() {
     const [terminals, setTerminals] = useState<{ id: number }[]>([]);
@@ -22,6 +24,7 @@ export default function Terminal() {
         const newTerminal = { id: Date.now() };
         setTerminals((prev) => [...prev, newTerminal]);
         setActiveTerminal(newTerminal.id); // Set the new terminal as active
+        
     };
 
     const removeTerminal = (id: number) => {
@@ -36,7 +39,8 @@ export default function Terminal() {
     resizeActiveTerminal = () => {
         if (activeTerminal !== null) {
             console.log(`Resizing terminal with ID: ${activeTerminal}`);
-            // Add logic to call resize on the active terminal component if needed
+            terminalEvents.emit('resize', activeTerminal);
+
         }
     };
 
@@ -104,7 +108,7 @@ export default function Terminal() {
                             height: '100%',
                         }}
                     >
-                        <TerminalComponent />
+                        <TerminalComponent terminalId={terminal.id}/>
                     </div>
                 ))}
             </div>

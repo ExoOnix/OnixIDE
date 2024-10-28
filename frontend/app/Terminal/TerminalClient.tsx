@@ -1,5 +1,8 @@
-import { useEffect, useRef, useState, forwardRef, useImperativeHandle } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSocket } from '../Editor/Editor';
+import { terminalEvents } from './Terminal';
+
+let handleResize: () => void;
 
 const initHandleResize = (fitAddon: any, socket: any, terminal: any) => {
     if (fitAddon) {
@@ -10,18 +13,12 @@ const initHandleResize = (fitAddon: any, socket: any, terminal: any) => {
     }
 };
 
-const TerminalClient = forwardRef((_, ref) => {
+export default function TerminalClient({ terminalId }: { terminalId: any }) {
     const terminalRef = useRef<HTMLDivElement>(null);
     const fitAddon = useRef<any>(null);
     const [isInitialized, setIsInitialized] = useState(false);
     const socket: any = useSocket();
     const terminal = useRef<any>(null);
-
-    useImperativeHandle(ref, () => ({
-        resize: () => {
-            initHandleResize(fitAddon.current, socket, terminal.current);
-        },
-    }));
 
     useEffect(() => {
         const loadTerminal = async () => {
@@ -42,10 +39,15 @@ const TerminalClient = forwardRef((_, ref) => {
                 fitAddon.current.fit();
                 setIsInitialized(true);
 
-                // Call resize function on window resize
-                const handleResize = () => initHandleResize(fitAddon.current, socket, terminal.current);
+                handleResize = () => initHandleResize(fitAddon.current, socket, terminal.current);
+
                 window.addEventListener('resize', handleResize);
-                handleResize(); // Call once to initialize
+                terminalEvents.on('resize', (id) => {
+                    console.log(`resize ${id} id ${terminalId}`);
+                    if (id == terminalId) {
+                        handleResize()
+                    }
+                });
 
                 socket.on("terminal.incomingData", (data: string) => {
                     terminal.current?.write(data);
@@ -56,7 +58,7 @@ const TerminalClient = forwardRef((_, ref) => {
                 });
 
                 return () => {
-                    window.removeEventListener('resize', handleResize); // Clean up listener
+                    window.removeEventListener('resize', handleResize);
                     terminal.current?.dispose();
                     socket.off("terminal.incomingData");
                 };
@@ -74,6 +76,7 @@ const TerminalClient = forwardRef((_, ref) => {
             style={{ width: '100%', height: '100%', backgroundColor: 'black' }}
         ></div>
     );
-});
+}
 
-export default TerminalClient;
+
+export { handleResize };

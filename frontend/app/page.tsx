@@ -58,8 +58,6 @@ export default function Home() {
     event.preventDefault();
     document.addEventListener('mousemove', resizePanel);
     document.addEventListener('mouseup', stopResizing);
-
-    resizeActiveTerminal()
   };
 
   const resizePanel = (event: MouseEvent) => {
@@ -67,7 +65,10 @@ export default function Home() {
       const containerRect = containerRef.current.getBoundingClientRect();
       const newWidth = event.clientX - containerRect.left;
       setTreeWidth(Math.max(100, newWidth));
-        }
+
+      resizeActiveTerminal()
+    }
+        
   };
 
   const stopResizing = () => {

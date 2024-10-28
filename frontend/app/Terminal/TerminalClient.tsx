@@ -58,6 +58,8 @@ export default function TerminalClient({ terminalId }: { terminalId: any }) {
                     socket.emit("terminal.keystroke", data);
                 });
 
+                handleResize()
+
                 return () => {
                     window.removeEventListener('resize', handleResize);
                     terminal.current?.dispose();

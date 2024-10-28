@@ -104,7 +104,14 @@ function deleteExternal(filePath: string, isDir: boolean) {
 }
 
 const watcher = chokidar.watch('./project', {
-	ignored: /(^|[\/\\])\../, // Ignore dotfiles (e.g., .git, .DS_Store)
+	ignored: [
+		/(^|[\/\\])\../,  // Ignore dotfiles (e.g., .git, .DS_Store)
+		/[\/\\]node_modules[\/\\]/,  // Ignore node_modules directory at any level
+		/[\/\\]\.git[\/\\]/,          // Ignore .git directory at any level
+		/[\/\\]tmp[\/\\]/,            // Ignore tmp directory at any level
+		/[\/\\]build[\/\\]/,          // Ignore build directory at any level
+		/[\/\\]dist[\/\\]/            // Ignore dist directory at any level
+	],
 	persistent: true,
 });
 

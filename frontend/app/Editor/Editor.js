@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
-
 import { sublime } from '@uiw/codemirror-theme-sublime';
 import { indentUnit } from '@codemirror/language';
 import { basicSetup } from '@uiw/codemirror-extensions-basic-setup';
@@ -13,7 +12,7 @@ import { io } from 'socket.io-client';
 import { emitGetFiles } from '../Filetree/Tree';
 import { loadLanguage, langNames, langs } from '@uiw/codemirror-extensions-langs';
 import { loadLanguageExtensions } from './extensions';
-
+import { inlineCopilot } from 'codemirror-copilot';
 
 // Helper functions
 const pushUpdates = (socket, filename, version, fullUpdates) => {
@@ -90,8 +89,8 @@ const peerExtension = (socket, filename, startVersion) => {
                 const updates = await pullUpdates(socket, filename, version);
                 try {
                     this.view.dispatch(receiveUpdates(this.view.state, updates));
-                } catch(err) {
-                    console.error(err)
+                } catch (err) {
+                    console.error(err);
                 }
             }
         }
@@ -130,7 +129,6 @@ const Home = ({ filename }) => {
 
         socket.on('connect', handleConnect);
 
-
         if (socket.connected) {
             handleConnect();
         }
@@ -152,23 +150,44 @@ const Home = ({ filename }) => {
 };
 
 const EditorComponent = ({ filename, code, version, socket }) => {
+    const fetchPrediction = async (prefix, suffix) => {
+        try {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URI}/api/autocomplete/`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ prefix, suffix }),
+            });
+
+            if (!res.ok) {
+                throw new Error(`Error: ${res.statusText}`);
+            }
+
+            const { prediction } = await res.json();
+            return prediction;
+        } catch (error) {
+            console.error("Failed to fetch prediction:", error);
+            return ``; // Return an empty string on error
+        }
+    };
+
     const extensions = useMemo(() => [
         indentUnit.of("\t"),
         basicSetup(),
         ...loadLanguageExtensions(filename),  // Load extensions from helper
-        ...peerExtension(socket, filename, version)
+        ...peerExtension(socket, filename, version),
+        inlineCopilot(fetchPrediction), // Pass the fetchPrediction function here
     ], [socket, filename, version]);
-
 
     return (
         <div>
-        <CodeMirror
-            value={code}
-            height="100%"
-            theme={sublime}
-            extensions={extensions}
-        />
-        {/* <p>{filename.substring(filename.lastIndexOf('.') + 1)}</p> */}
+            <CodeMirror
+                value={code}
+                height="100%"
+                theme={sublime}
+                extensions={extensions}
+            />
         </div>
     );
 };

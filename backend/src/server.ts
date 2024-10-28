@@ -12,6 +12,7 @@ import cors from 'cors';
 import * as pty from 'node-pty'
 import os from 'os'
 import chokidar from 'chokidar';
+import ollama from 'ollama';
 
 interface FileItem {
 	id: number;
@@ -178,6 +179,44 @@ app.post('/api/upload/:path*?', upload.single('file'), (req: any, res: any) => {
 		return res.status(500).json({ message: 'Error extracting file', error });
 	}
 });
+
+app.post('/api/autocomplete', async (req: any, res: any) => {
+	const { prefix, suffix } = req.body;
+
+	// Construct the prompt for the Ollama API
+	const prompt = `${prefix}<FILL_ME>${suffix}`;
+
+	try {
+		// Call Ollama API using the library
+		const response = await ollama.chat({
+			model: 'llama3.1', // Replace with your actual model name
+			messages: [
+				{
+					role: 'system',
+					content: "programmer that replaces <FILL_ME> part with the right predicted code. Only output the code that replaces <FILL_ME> part. Do not add any explanation or markdown. Return NONE if nothing should be added"
+				},
+				{ role: 'user', content: prompt },
+			],
+		});
+
+		// Extract and trim the content from the response
+		const messageContent = response.message?.content?.trim() || "No prediction available";
+
+		// Check if the content is "NONE" or empty, then respond accordingly
+		if (messageContent.toUpperCase() === "NONE") {
+			return res.json({ prediction: "" });
+		}
+
+		// Log and respond with the prediction
+		console.log(messageContent);
+		res.json({ prediction: messageContent });
+
+	} catch (error) {
+		console.error("Error calling Ollama API:", error);
+		res.status(500).json({ error: "Internal server error" });
+	}
+});
+
 
 /**
  * Recursively traverse the directory and convert line endings to LF for text files.

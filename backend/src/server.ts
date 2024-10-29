@@ -181,11 +181,10 @@ app.post('/api/upload/:path*?', upload.single('file'), (req: any, res: any) => {
 });
 
 app.post('/api/autocomplete', async (req: any, res: any) => {
-	const { prefix, suffix } = req.body;
+	const { prefix, suffix, ext } = req.body;
 
 	// Construct the prompt for the Ollama API
 	const prompt = `${prefix}<FILL_ME>${suffix}`;
-
 	try {
 		// Call Ollama API using the library
 		const response = await ollama.chat({
@@ -193,7 +192,7 @@ app.post('/api/autocomplete', async (req: any, res: any) => {
 			messages: [
 				{
 					role: 'system',
-					content: "programmer that replaces <FILL_ME> part with the right predicted code. Only output the code that replaces <FILL_ME> part. Do not add any explanation or markdown. Return NONE if nothing should be added"
+					content: `A ${ext} programmer that replaces <FILL_ME> part with the right predicted code. Only output the code that replaces <FILL_ME> part. Do not add any explanation or markdown. Return NONE if nothing should be added or if out of place. When outputting code continue it, dont repeat anything and output proper tabs and spaces.`
 				},
 				{ role: 'user', content: prompt },
 			],

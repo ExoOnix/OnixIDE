@@ -152,12 +152,13 @@ const Home = ({ filename }) => {
 const EditorComponent = ({ filename, code, version, socket }) => {
     const fetchPrediction = async (prefix, suffix) => {
         try {
+            const ext = filename.substring(filename.lastIndexOf('.') + 1).toLowerCase();
             const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URI}/api/autocomplete/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ prefix, suffix }),
+                body: JSON.stringify({ prefix, suffix, ext }),
             });
 
             if (!res.ok) {

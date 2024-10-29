@@ -13,7 +13,12 @@ import * as pty from 'node-pty'
 import os from 'os'
 import chokidar from 'chokidar';
 import ollama from 'ollama';
+import dotenv from 'dotenv';
 
+const envPath = path.resolve('../.env');
+dotenv.config({ path: envPath })
+console.log("Configuration:")
+console.log("USE_OLLAMA:", process.env.USE_OLLAMA || false);
 interface FileItem {
 	id: number;
 	parent: number;
@@ -180,6 +185,7 @@ app.post('/api/upload/:path*?', upload.single('file'), (req: any, res: any) => {
 	}
 });
 
+if (process.env.USE_OLLAMA == "true") {
 app.post('/api/autocomplete', async (req: any, res: any) => {
 	const { prefix, suffix, ext } = req.body;
 
@@ -214,7 +220,7 @@ app.post('/api/autocomplete', async (req: any, res: any) => {
 		console.error("Error calling Ollama API:", error);
 		res.status(500).json({ error: "Internal server error" });
 	}
-});
+})}
 
 
 /**

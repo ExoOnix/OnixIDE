@@ -168,7 +168,7 @@ const EditorComponent = ({ filename, code, version, socket }) => {
             const { prediction } = await res.json();
             return prediction;
         } catch (error) {
-            console.error("Failed to fetch prediction:", error);
+            console.log("Failed to fetch prediction:", error);
             return ``; // Return an empty string on error
         }
     };

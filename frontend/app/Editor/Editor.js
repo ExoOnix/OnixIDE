@@ -152,21 +152,23 @@ const Home = ({ filename }) => {
 const EditorComponent = ({ filename, code, version, socket }) => {
     const fetchPrediction = async (prefix, suffix) => {
         try {
-            const ext = filename.substring(filename.lastIndexOf('.') + 1).toLowerCase();
-            const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URI}/api/autocomplete/`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ prefix, suffix, ext }),
-            });
+            if (process.env.NEXT_PUBLIC_USE_OLLAMA == "true") {
+                const ext = filename.substring(filename.lastIndexOf('.') + 1).toLowerCase();
+                const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URI}/api/autocomplete/`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ prefix, suffix, ext }),
+                });
 
-            if (!res.ok) {
-                throw new Error(`Error: ${res.statusText}`);
+                if (!res.ok) {
+                    throw new Error(`Error: ${res.statusText}`);
+                }
+
+                const { prediction } = await res.json();
+                return prediction;
             }
-
-            const { prediction } = await res.json();
-            return prediction;
         } catch (error) {
             console.log("Failed to fetch prediction:", error);
             return ``; // Return an empty string on error

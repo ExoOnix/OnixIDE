@@ -193,19 +193,13 @@ app.post('/api/autocomplete', async (req: any, res: any) => {
 	const prompt = `${prefix}<FILL_ME>${suffix}`;
 	try {
 		// Call Ollama API using the library
-		const response = await ollama.chat({
-			model: 'llama3.1', // Replace with your actual model name
-			messages: [
-				{
-					role: 'system',
-					content: `A ${ext} programmer that replaces <FILL_ME> part with the right predicted code. Only output the code that replaces <FILL_ME> part. Do not add any explanation or markdown. Return NONE if nothing should be added or if out of place. When outputting code continue it, dont repeat anything and output proper tabs and spaces.`
-				},
-				{ role: 'user', content: prompt },
-			],
+		const response = await ollama.generate({
+			model: 'codellama:7b-code', // Replace with your actual model name
+			prompt: `<PRE> ${prefix} <SUF>${suffix} <MID>`
 		});
 
 		// Extract and trim the content from the response
-		const messageContent = response.message?.content?.trim() || "No prediction available";
+		const messageContent = response.response?.trim() || "";
 
 		// Check if the content is "NONE" or empty, then respond accordingly
 		if (messageContent.toUpperCase() === "NONE") {

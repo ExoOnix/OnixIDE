@@ -43,6 +43,13 @@ OnixIDE is a powerful collaborative online IDE built with Node.js, designed for 
 The code has gone through a lot of rewrites and changes, so it might be a bit messy in places, but it works.
 To get started with local development:
 
+##### Set environment variables.
+   ```
+   frontend/.env.local (For local development)
+   .env
+   ```
+
+
 ### Backend:
 
 > **Note**: The folder open in the IDE is backend/project.
@@ -67,12 +74,6 @@ To get started with local development:
    ```
 
 ### Frontend:
-
-0. Set environment variables.
-   ```
-   frontend/.env.local (For local development)
-   .env
-   ```
 
 1. Navigate to the frontend directory:
 

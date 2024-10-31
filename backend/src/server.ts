@@ -12,7 +12,13 @@ import cors from 'cors';
 import * as pty from 'node-pty'
 import os from 'os'
 import chokidar from 'chokidar';
+import ollama from 'ollama';
+import dotenv from 'dotenv';
 
+const envPath = path.resolve('../.env');
+dotenv.config({ path: envPath })
+console.log("Configuration:")
+console.log("USE_OLLAMA:", process.env.USE_OLLAMA || false);
 interface FileItem {
 	id: number;
 	parent: number;
@@ -178,6 +184,38 @@ app.post('/api/upload/:path*?', upload.single('file'), (req: any, res: any) => {
 		return res.status(500).json({ message: 'Error extracting file', error });
 	}
 });
+
+if (process.env.USE_OLLAMA == "true") {
+app.post('/api/autocomplete', async (req: any, res: any) => {
+	const { prefix, suffix, ext } = req.body;
+
+	// Construct the prompt for the Ollama API
+	const prompt = `${prefix}<FILL_ME>${suffix}`;
+	try {
+		// Call Ollama API using the library
+		const response = await ollama.generate({
+			model: 'codellama:7b-code', // Replace with your actual model name
+			prompt: `<PRE> ${prefix} <SUF>${suffix} <MID>`
+		});
+
+		// Extract and trim the content from the response
+		const messageContent = response.response?.trim() || "";
+
+		// Check if the content is "NONE" or empty, then respond accordingly
+		if (messageContent.toUpperCase() === "NONE") {
+			return res.json({ prediction: "" });
+		}
+
+		// Log and respond with the prediction
+		console.log(messageContent);
+		res.json({ prediction: messageContent });
+
+	} catch (error) {
+		console.error("Error calling Ollama API:", error);
+		res.status(500).json({ error: "Internal server error" });
+	}
+})}
+
 
 /**
  * Recursively traverse the directory and convert line endings to LF for text files.

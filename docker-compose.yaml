@@ -20,13 +20,14 @@ services:
       - "traefik.enable=true"  # Enable Traefik for this service
       - "traefik.http.routers.backend.rule=PathPrefix(`/api`) || PathPrefix(`/ws`)"  # Route to /api and /ws
       - "traefik.http.services.backend.loadbalancer.server.port=8000"  # Service port for HTTP API
-
+    env_file: ".env"
 
   frontend:
     build: 
       context: ./frontend
       args:
         BACKEND_URI: ${BACKEND_URI}
+        USE_OLLAMA: ${USE_OLLAMA}
     restart: always
     labels:
       - "traefik.enable=true"  # Enable Traefik for this service

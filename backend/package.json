@@ -24,10 +24,13 @@
     "adm-zip": "^0.5.16",
     "chokidar": "^4.0.1",
     "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
     "express": "^4.21.0",
     "multer": "^1.4.5-lts.1",
     "node-pty": "^1.0.0",
     "nodemon": "^2.0.22",
+    "ollama": "^0.5.9",
+    "openai": "^4.68.4",
     "socket.io": "^4.6.2"
   }
 }

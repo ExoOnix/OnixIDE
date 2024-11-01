@@ -7,6 +7,7 @@ import { useFilenameStore } from './stores/filenameStore';
 import Terminal from './Terminal/Terminal'
 import { useSocket } from './Editor/Editor';
 import { resizeActiveTerminal } from './Terminal/Terminal';
+import { Tabs } from './Tabs/Tabs'
 
 export default function Home() {
   const { filename, setFilename } = useFilenameStore();
@@ -79,6 +80,11 @@ export default function Home() {
   return (
     <main>
       <div className='maincontainer' ref={containerRef} style={{ display: 'flex', height: '100vh' }}>
+        <div
+          style={{ backgroundColor: "#2e2e2e" }}
+        >
+          <div style={{marginTop: "70px", marginLeft: '10px'}}><Tabs /></div>
+        </div>
         <div
           className="file-tree-container"
           style={{ width: `${treeWidth}px`, minWidth: '100px', overflow: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none' }}

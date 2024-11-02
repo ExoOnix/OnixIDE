@@ -372,7 +372,6 @@ export const FileTree = () => {
                     onDrop={handleDrop}
                 />
             </DndProvider>
-            <p style={{color: "white"}}>{ filename }</p>
         </div>
     );
 };

@@ -8,6 +8,8 @@ import Terminal from './Terminal/Terminal'
 import { useSocket } from './Editor/Editor';
 import { resizeActiveTerminal } from './Terminal/Terminal';
 import { Tabs } from './Tabs/Tabs'
+import { useTabStore } from './stores/tabStore';
+import { Settings } from './Settings/Settings';
 
 export default function Home() {
   const { filename, setFilename } = useFilenameStore();
@@ -17,6 +19,7 @@ export default function Home() {
   const terminalRef = useRef<HTMLDivElement | null>(null); // Add this ref
   const socket: any = useSocket();
   const [editorKey, setEditorKey] = useState(filename);
+  const { tab } = useTabStore();
 
   useEffect(() => {
     setEditorKey(filename)
@@ -81,7 +84,7 @@ export default function Home() {
     <main>
       <div className='maincontainer' ref={containerRef} style={{ display: 'flex', height: '100vh' }}>
         <div
-          style={{ backgroundColor: "#2e2e2e" }}
+          style={{ backgroundColor: "#383838", paddingRight: '10px' }}
         >
           <div style={{marginTop: "70px", marginLeft: '10px'}}><Tabs /></div>
         </div>
@@ -89,7 +92,9 @@ export default function Home() {
           className="file-tree-container"
           style={{ width: `${treeWidth}px`, minWidth: '100px', overflow: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
-          <FileTree />
+          {tab === "files" && <FileTree />}
+          {tab === "settings" && <Settings />}
+
         </div>
 
         <div

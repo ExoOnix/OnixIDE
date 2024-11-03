@@ -30,6 +30,7 @@ export const Settings = () => {
                     checked={AICompletions}
                     onCheckedChange={(checked) => setAICompletions(checked)}
                     id="ai-completions-switch"
+                    {...(process.env.NEXT_PUBLIC_USE_OLLAMA !== "true" && { disabled: true })}
                 />
                 <h6 style={{ marginLeft: '8px', display: 'inline' }}>AutoCompletions</h6>
             </div>

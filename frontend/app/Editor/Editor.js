@@ -154,7 +154,7 @@ const Home = ({ filename }) => {
 const EditorComponent = ({ filename, code, version, socket }) => {
     const fetchPrediction = async (prefix, suffix) => {
         try {
-            if (process.env.NEXT_PUBLIC_USE_OLLAMA == "true" && useSettingsStore.getState().AICompletions == true) {
+            if (process.env.NEXT_PUBLIC_USE_OLLAMA == "true" && useSettingsStore.getState().AICompletions === true) {
                 const ext = filename.substring(filename.lastIndexOf('.') + 1).toLowerCase();
                 const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URI}/api/autocomplete/`, {
                     method: "POST",

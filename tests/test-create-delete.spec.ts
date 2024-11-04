@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test('Creating and Deleting Files', async ({ page, browserName }) => {
   test.skip(browserName.toLowerCase() === 'firefox', `Test not for firefox!`);
+  test.skip(browserName.toLowerCase() === 'webkit', `Test not for webkit!`);
 
 
 

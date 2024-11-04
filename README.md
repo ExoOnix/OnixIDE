@@ -99,7 +99,7 @@ To get started with local development:
 To Run the End-to-End testing on the application.
 - Run docker [Production Build](#production-build) in parallel.
 
-- Install packages:
+- Run tests:
 
    ```bash
    npm i

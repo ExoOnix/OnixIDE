@@ -37,7 +37,12 @@ frontend/.vercel
 # typescript
 frontend/*.tsbuildinfo
 frontend/next-env.d.ts
-frontend/package-lock.json
+# frontend/package-lock.json
 backend/project/*
 !backend/project/.gitkeep
-backend/yarn.lock
+# backend/yarn.lock
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

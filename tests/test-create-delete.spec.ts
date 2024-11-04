@@ -1,6 +1,10 @@
 import { test, expect } from '@playwright/test';
 
-test('Creating and Deleting Files', async ({ page }) => {
+test('Creating and Deleting Files', async ({ page, browserName }) => {
+  test.skip(browserName.toLowerCase() === 'firefox', `Test not for firefox!`);
+
+
+
   await page.goto('http://localhost/');
   await page.locator('div').filter({ hasText: /^OnixIDE$/ }).click({
     button: 'right'

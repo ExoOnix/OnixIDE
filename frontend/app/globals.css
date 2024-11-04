@@ -36,7 +36,7 @@ html, body {
 .file-tree-container {
   width: 15%;
   background-color: #2e2e2e;
-  padding: 16px;
+  padding: 5px;
   overflow: auto;
 }
 

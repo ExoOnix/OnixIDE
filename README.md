@@ -95,6 +95,18 @@ To get started with local development:
 
 > **Note**: Run both servers (frontend and backend) in separate terminal windows. Once running, open the IDE on `http://localhost:3000`.
 
+### Running tests
+To Run the End-to-End testing on the application.
+- Run docker [Production Build](#production-build) in parallel.
+
+- Run tests:
+
+   ```bash
+   npm i
+   npx playwright install --with-deps
+   npx playwright test
+   ```
+
 ---
 
 ## Production Build

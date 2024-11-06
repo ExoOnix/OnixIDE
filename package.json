@@ -1,0 +1,17 @@
+{
+  "name": "onixide",
+  "version": "1.0.0",
+  "description": "![Editor Image](docs/head.png \"Editor image\")",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {},
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.48.2",
+    "@types/node": "^22.8.7"
+  }
+}

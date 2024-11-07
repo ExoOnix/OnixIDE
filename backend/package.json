@@ -31,6 +31,8 @@
     "nodemon": "^2.0.22",
     "ollama": "^0.5.9",
     "openai": "^4.68.4",
+    "simple-git": "^3.27.0",
+    "simplegit": "^1.0.2",
     "socket.io": "^4.6.2"
   }
 }

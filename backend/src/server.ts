@@ -14,6 +14,7 @@ import os from 'os'
 import chokidar from 'chokidar';
 import ollama from 'ollama';
 import dotenv from 'dotenv';
+import { GitRoutes, generalChange } from './gitRoutes.js';
 
 const envPath = path.resolve('../.env');
 dotenv.config({ path: envPath })
@@ -64,7 +65,6 @@ var detectChanges = true;
 function watchChanges(filePath: string) {
 	if (detectChanges) {
 		console.log(`File changed: ${filePath}`);
-
 		// Get the relative file path within the project
 		const relativeFilePath = path.relative('./project', filePath);
 
@@ -124,13 +124,27 @@ const watcher = chokidar.watch('./project', {
 
 
 watcher
-	.on('add', (path) => resetTree())
-	.on('unlink', (path) => deleteExternal(path, false))
-	.on('addDir', (path) => resetTree())
-	.on('unlinkDir', (path) => deleteExternal(path, true))
+	.on('add', (path) => {
+		resetTree()
+		generalChange(io)
+	})
+	.on('unlink', (path) => {
+		deleteExternal(path, false)
+		generalChange(io)
+	})
+	.on('addDir', (path) => {
+		resetTree()
+		generalChange(io)
+	})
+	.on('unlinkDir', (path) => {
+		deleteExternal(path, true)
+		generalChange(io)
+	}
+	)
 	.on('error', (error) => console.error(`Watcher error: ${error}`))
 	.on('change', (path) => {
 		watchChanges(path)
+		generalChange(io)
 	});
 
 
@@ -632,6 +646,8 @@ io.on('connection', (socket: Socket) => {
 		// Resize the pty process based on the new dimensions
 		ptyProcess.resize(columns, rows);
 	});
+
+	GitRoutes(socket, io)
 
 	// Clean up the pty process on disconnect
 	socket.on('disconnect', () => {

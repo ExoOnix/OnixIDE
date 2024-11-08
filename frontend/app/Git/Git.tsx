@@ -24,7 +24,7 @@ export const Git = () => {
     }, [socket])
     useEffect(() => {
         socket.on("gitUpdate", (status: GitStatus, gitRunning: boolean) => {
-            console.log("Status received:", status);
+            // console.log("Status received:", status);
 
             // Filter out staged files from modified files
             const modifiedNotStaged = (status.modified || []).filter(file =>
@@ -99,7 +99,21 @@ export const Git = () => {
             </div>
 
             <div style={{ padding: '10px' }}>
-                <h4>Changes</h4>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <h4>Changes</h4>
+                    <div style={{ background: 'none', border: 'none', color: 'limegreen', cursor: 'pointer', marginLeft: 'auto' }}>
+                        <button onClick={() => resetFile("*")} style={{ background: 'none', border: 'none', color: 'tomato', cursor: 'pointer', marginRight: "5px" }}>
+                            -
+                        </button>
+                        <button
+                            onClick={() => addFile("*")}
+                            style={{ background: 'none', border: 'none', color: 'limegreen', cursor: 'pointer' }}
+                        >
+                            +
+                        </button>
+                    </div>
+                </div>
+
                 {!gitRunning ? (
                     <div style={{ color: 'tomato' }}>Git is disabled</div>
                 ) : (

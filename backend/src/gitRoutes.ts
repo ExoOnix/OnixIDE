@@ -13,7 +13,7 @@ export async function generalChange(io: any) {
         const status = await git.status();
         io.emit("gitUpdate", status, GitRunning)
     } catch (err) {
-        console.log(err)
+        console.log("Git repo doesent exist")
     }
 }
 

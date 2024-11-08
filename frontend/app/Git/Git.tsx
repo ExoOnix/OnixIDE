@@ -16,6 +16,7 @@ export const Git = () => {
     const [unstagedFiles, setUnstagedFiles] = useState<string[]>([]);
     const [stagedFiles, setStagedFiles] = useState<string[]>([]);
     const [gitRunning, setGitRunning] = useState<boolean>(false);
+    const [commitMessage, setCommitMessage] = useState<string>("");
 
     useEffect(() => {
         socket.emit('recieveGit')
@@ -56,7 +57,12 @@ export const Git = () => {
     function resetFile(filePath: string) {
         socket.emit("resetFile", filePath)
     }
-
+    function gitCommit() {
+        if (commitMessage.length >= 3) {
+            socket.emit("gitCommit", commitMessage);
+            setCommitMessage(""); // Clear input after commit
+        }
+    }
     return (
         <div style={{ display: 'flex', color: 'white', height: '100vh', flexDirection: 'column' }}>
             <div style={{
@@ -71,8 +77,8 @@ export const Git = () => {
             }}>
                 <span>OnixIDE</span>
             </div>
-            <Input style={{marginTop: "5px"}} />
-            <Button variant="secondary" style={{ marginTop: "5px" }}>Commit</Button>
+            <Input disabled={!gitRunning} value={commitMessage} onChange={(e) => setCommitMessage(e.target.value)} style={{marginTop: "5px"}} />
+            <Button disabled={commitMessage.length < 3} onClick={gitCommit} variant="secondary" style={{ marginTop: "5px" }}>Commit</Button>
             <div style={{ padding: '10px' }}>
                 <h4>Changes</h4>
                 {!gitRunning ? (

@@ -32,5 +32,6 @@ export function GitRoutes(socket: Socket, io: any) {
     })
     socket.on("gitCommit", async (message) => {
         await git.commit(message);
+        generalChange(io)
     })
 }

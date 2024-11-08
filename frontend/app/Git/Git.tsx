@@ -22,15 +22,31 @@ export const Git = () => {
         socket.on("gitUpdate", (status: GitStatus, gitRunning: boolean) => {
             console.log("Status received:", status);
 
+            // Filter out staged files from modified files
+            const modifiedNotStaged = (status.modified || []).filter(file =>
+                !status.staged?.includes(file)
+            );
+            const deleteNotStaged = (status.deleted || []).filter(file =>
+                !status.staged?.includes(file)
+            );
+
+            // Combine modified (not staged) and not_added files
+            const combinedUnstaged = [
+                ...modifiedNotStaged,
+                ...deleteNotStaged,
+                ...(status.not_added || []),
+            ];
+
             setGitRunning(gitRunning);
-            setUnstagedFiles(status.not_added || []);
-            setStagedFiles(status.staged || []); // Assuming 'staged' is available as an array in the status object
+            setUnstagedFiles(combinedUnstaged); // Only modified files not staged + not added
+            setStagedFiles(status.staged || []); // Ensure staged is an array
         });
 
         return () => {
             socket.off("gitUpdate");
         };
     }, [socket]);
+
 
     function addFile(filePath: string) {
         socket.emit("addFile", filePath)

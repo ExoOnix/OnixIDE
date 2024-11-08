@@ -13,7 +13,7 @@ export async function generalChange(io: any) {
         const status = await git.status();
         io.emit("gitUpdate", status, GitRunning)
     } catch (err) {
-        console.error(err)
+        console.log(err)
     }
 }
 
@@ -34,4 +34,12 @@ export function GitRoutes(socket: Socket, io: any) {
         await git.commit(message);
         generalChange(io)
     })
+    socket.on("gitPush", async () => {
+        try {
+            await git.push('origin', 'main');
+            generalChange(io);
+        } catch (err) {
+            console.log("Git Push Error:", err);
+        }
+    });
 }

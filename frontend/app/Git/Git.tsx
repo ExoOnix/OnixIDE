@@ -64,6 +64,11 @@ export const Git = () => {
             setCommitMessage(""); // Clear input after commit
         }
     }
+    function gitPush() {
+        if (gitRunning) {
+            socket.emit("gitPush")
+        }
+    }
     return (
         <div style={{ display: 'flex', color: 'white', height: '100vh', flexDirection: 'column' }}>
             <div style={{
@@ -88,7 +93,7 @@ export const Git = () => {
                 >
                     Commit
                 </Button>
-                <Button variant="ghost" size="icon" style={{ marginTop: "5px" }}>
+                <Button disabled={!gitRunning} onClick={() => gitPush()} variant="ghost" size="icon" style={{ marginTop: "5px" }}>
                     <ArrowUpFromLine />
                 </Button>
             </div>

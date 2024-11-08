@@ -134,17 +134,14 @@ watcher
 	})
 	.on('addDir', (path) => {
 		resetTree()
-		generalChange(io)
 	})
 	.on('unlinkDir', (path) => {
 		deleteExternal(path, true)
-		
 	}
 	)
 	.on('error', (error) => console.error(`Watcher error: ${error}`))
 	.on('change', (path) => {
 		watchChanges(path)
-		
 	});
 
 

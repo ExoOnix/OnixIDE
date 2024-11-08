@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSocket } from "../Editor/Editor";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { ArrowUpFromLine } from 'lucide-react'
 
 interface GitStatus {
     modified: string[];
@@ -78,7 +79,20 @@ export const Git = () => {
                 <span>OnixIDE</span>
             </div>
             <Input disabled={!gitRunning} value={commitMessage} onChange={(e) => setCommitMessage(e.target.value)} style={{marginTop: "5px"}} />
-            <Button disabled={commitMessage.length < 3} onClick={gitCommit} variant="secondary" style={{ marginTop: "5px" }}>Commit</Button>
+            <div style={{ display: "flex", width: "100%", gap: "3px" }}>
+                <Button
+                    disabled={commitMessage.length < 3}
+                    onClick={gitCommit}
+                    variant="secondary"
+                    style={{ marginTop: "5px", flexGrow: 1 }}
+                >
+                    Commit
+                </Button>
+                <Button variant="ghost" size="icon" style={{ marginTop: "5px" }}>
+                    <ArrowUpFromLine />
+                </Button>
+            </div>
+
             <div style={{ padding: '10px' }}>
                 <h4>Changes</h4>
                 {!gitRunning ? (

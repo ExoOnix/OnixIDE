@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSocket } from "../Editor/Editor";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ArrowUpFromLine } from 'lucide-react'
+import { ArrowUpFromLine, ArrowDownToLine } from 'lucide-react'
 
 interface GitStatus {
     modified: string[];
@@ -69,6 +69,11 @@ export const Git = () => {
             socket.emit("gitPush")
         }
     }
+    function gitPull() {
+        if (gitRunning) {
+            socket.emit("gitPull")
+        }
+    }
     return (
         <div style={{ display: 'flex', color: 'white', height: '100vh', flexDirection: 'column' }}>
             <div style={{
@@ -95,6 +100,9 @@ export const Git = () => {
                 </Button>
                 <Button disabled={!gitRunning} onClick={() => gitPush()} variant="ghost" size="icon" style={{ marginTop: "5px" }}>
                     <ArrowUpFromLine />
+                </Button>
+                <Button disabled={!gitRunning} onClick={() => gitPull()} variant="ghost" size="icon" style={{ marginTop: "5px" }}>
+                    <ArrowDownToLine />
                 </Button>
             </div>
 

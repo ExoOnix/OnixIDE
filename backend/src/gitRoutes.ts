@@ -42,4 +42,12 @@ export function GitRoutes(socket: Socket, io: any) {
             console.log("Git Push Error:", err);
         }
     });
+    socket.on("gitPull", async () => {
+        try {
+            await git.pull('origin', 'main');
+            generalChange(io);
+        } catch (err) {
+            console.log("Git Push Error:", err);
+        }
+    });
 }

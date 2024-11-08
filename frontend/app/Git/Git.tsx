@@ -102,11 +102,12 @@ export const Git = () => {
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                     <h4>Changes</h4>
                     <div style={{ background: 'none', border: 'none', color: 'limegreen', cursor: 'pointer', marginLeft: 'auto' }}>
-                        <button onClick={() => resetFile("*")} style={{ background: 'none', border: 'none', color: 'tomato', cursor: 'pointer', marginRight: "5px" }}>
+                        <button disabled={!gitRunning}  onClick={() => resetFile("*")} style={{ background: 'none', border: 'none', color: 'tomato', cursor: 'pointer', marginRight: "5px" }}>
                             -
                         </button>
                         <button
                             onClick={() => addFile("*")}
+                            disabled={!gitRunning}
                             style={{ background: 'none', border: 'none', color: 'limegreen', cursor: 'pointer' }}
                         >
                             +

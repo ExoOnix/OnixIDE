@@ -9,7 +9,8 @@ interface GitStatus {
     created: string[];
     deleted: string[];
     renamed: { from: string; to: string }[];
-    staged: string[]; // Assuming staged files come in as a separate array for simplicity
+    staged: string[];
+    not_added: string[];
 }
 
 export const Git = () => {

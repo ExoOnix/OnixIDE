@@ -126,11 +126,11 @@ const watcher = chokidar.watch('./project', {
 watcher
 	.on('add', (path) => {
 		resetTree()
-		generalChange(io)
+		
 	})
 	.on('unlink', (path) => {
 		deleteExternal(path, false)
-		generalChange(io)
+		
 	})
 	.on('addDir', (path) => {
 		resetTree()
@@ -138,16 +138,19 @@ watcher
 	})
 	.on('unlinkDir', (path) => {
 		deleteExternal(path, true)
-		generalChange(io)
+		
 	}
 	)
 	.on('error', (error) => console.error(`Watcher error: ${error}`))
 	.on('change', (path) => {
 		watchChanges(path)
-		generalChange(io)
+		
 	});
 
 
+setInterval(() => {
+	generalChange(io);
+}, 5000);
 
 // Set up multer for file uploads
 const upload = multer({ storage: multer.memoryStorage() }); // Correctly configured

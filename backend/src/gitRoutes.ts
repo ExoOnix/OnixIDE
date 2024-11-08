@@ -4,7 +4,6 @@ import { Socket } from 'socket.io';
 
 const git: SimpleGit = simpleGit('./project');
 
-
 export async function generalChange(io: any) {
     try {
         const status = await git.status();
@@ -16,5 +15,7 @@ export async function generalChange(io: any) {
 
 // Example of the 'updateTree' handler
 export function GitRoutes(socket: Socket, io: any) {
-    
+    socket.on('recieveGit', () => {
+        generalChange(io)
+    })
 }

@@ -22,12 +22,15 @@ export function GitRoutes(socket: Socket, io: any) {
     socket.on('recieveGit', () => {
         generalChange(io)
     })
-    socket.on("addFile", (filePath) => {
-        git.add(filePath)
+    socket.on("addFile", async (filePath) => {
+        await git.add(filePath)
         generalChange(io)
     })
-    socket.on("resetFile", (filePath) => {
-        git.reset([filePath])
+    socket.on("resetFile", async (filePath) => {
+        await git.reset([filePath])
         generalChange(io)
+    })
+    socket.on("gitCommit", async (message) => {
+        await git.commit(message);
     })
 }

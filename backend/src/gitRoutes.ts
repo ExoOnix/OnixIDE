@@ -53,4 +53,12 @@ export function GitRoutes(socket: Socket, io: any) {
             console.log("Git Push Error:", err);
         }
     });
+    socket.on("switchBranch", async (branchName) => {
+        try {
+            await git.checkout(branchName);
+            generalChange(io);
+        } catch(err) {
+            console.log("Error switching branch: ", err)
+        }
+    })
 }

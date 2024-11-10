@@ -83,6 +83,9 @@ export const Git = () => {
             socket.emit("gitPull")
         }
     }
+    function gitSwitchBranch(branchName: string) {
+        socket.emit("switchBranch", branchName)
+    }
     return (
         <div style={{ display: 'flex', color: 'white', height: '100vh', flexDirection: 'column' }}>
             <div style={{
@@ -166,6 +169,7 @@ export const Git = () => {
                                             display: 'flex',
                                             alignItems: 'center', // Centers the icon vertically with the text
                                         }}
+                                        onClick={() => gitSwitchBranch(branch)}
                                     >
                                         <GitBranch
                                             style={{

@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useSocket } from "../Editor/Editor";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ArrowUpFromLine, ArrowDownToLine } from 'lucide-react'
+import { ArrowUpFromLine, ArrowDownToLine, GitBranch } from 'lucide-react'
+
 
 interface GitStatus {
     modified: string[];
@@ -20,11 +21,14 @@ export const Git = () => {
     const [gitRunning, setGitRunning] = useState<boolean>(false);
     const [commitMessage, setCommitMessage] = useState<string>("");
 
+    const [branches, setBranches] = useState<string[]>([]);
+    const [currentBranch, setCurrentBranch] = useState<string>("");
+
     useEffect(() => {
         socket.emit('recieveGit')
     }, [socket])
     useEffect(() => {
-        socket.on("gitUpdate", (status: GitStatus, gitRunning: boolean) => {
+        socket.on("gitUpdate", (status: GitStatus, gitRunning: boolean, gitbranches: string[], gitcurrentBranch: string) => {
             // console.log("Status received:", status);
 
             // Filter out staged files from modified files
@@ -41,7 +45,8 @@ export const Git = () => {
                 ...deleteNotStaged,
                 ...(status.not_added || []),
             ];
-
+            setBranches(gitbranches)
+            setCurrentBranch(gitcurrentBranch)
             setGitRunning(gitRunning);
             setUnstagedFiles(combinedUnstaged); // Only modified files not staged + not added
             setStagedFiles(status.staged || []); // Ensure staged is an array
@@ -147,7 +152,34 @@ export const Git = () => {
                         <span style={{ marginLeft: '10px', color: '#cfcfcf' }}>{file}</span>
                     </div>
                 ))}
-                {/* <h4>Branches</h4> */}
+                <h4>Branches</h4>
+                            {branches.map((branch) => (
+                                <div style={{ display: 'flex', alignItems: 'center' }} key={branch}>
+                                    <button
+                                        style={{
+                                            background: 'none',
+                                            border: 'none',
+                                            color: 'tomato',
+                                            cursor: 'pointer',
+                                            padding: 0, // Removes any extra padding
+                                            height: '1em', // Matches the height to the text
+                                            display: 'flex',
+                                            alignItems: 'center', // Centers the icon vertically with the text
+                                        }}
+                                    >
+                                        <GitBranch
+                                            style={{
+                                                width: '15px',
+                                                height: 'auto',
+                                                color: branch === currentBranch ? 'green' : 'tomato', // Conditionally set color
+                                            }}
+                                        />
+                                    </button>
+                                    <span style={{ marginLeft: '10px', color: '#cfcfcf' }}>{branch}</span>
+                                </div>
+                            ))}
+
+
             </div>
                 )}
             </div>

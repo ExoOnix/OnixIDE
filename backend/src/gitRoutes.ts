@@ -11,7 +11,10 @@ export async function generalChange(io: any) {
             GitRunning = true
         }
         const status = await git.status();
-        io.emit("gitUpdate", status, GitRunning)
+        const branchSummary = await git.branch();
+        const branches = branchSummary.all;
+        const currentBranch = branchSummary.current
+        io.emit("gitUpdate", status, GitRunning, branches, currentBranch)
     } catch (err) {
         io.emit("gitRunning", false)
     }

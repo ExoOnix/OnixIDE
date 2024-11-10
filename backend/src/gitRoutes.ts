@@ -36,7 +36,7 @@ export function GitRoutes(socket: Socket, io: any) {
     })
     socket.on("gitPush", async () => {
         try {
-            await git.push('origin', 'main');
+            await git.push();
             generalChange(io);
         } catch (err) {
             console.log("Git Push Error:", err);
@@ -44,7 +44,7 @@ export function GitRoutes(socket: Socket, io: any) {
     });
     socket.on("gitPull", async () => {
         try {
-            await git.pull('origin', 'main');
+            await git.pull();
             generalChange(io);
         } catch (err) {
             console.log("Git Push Error:", err);

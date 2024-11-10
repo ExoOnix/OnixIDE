@@ -46,6 +46,9 @@ export const Git = () => {
             setUnstagedFiles(combinedUnstaged); // Only modified files not staged + not added
             setStagedFiles(status.staged || []); // Ensure staged is an array
         });
+        socket.on("gitRunning", (gitRunning: boolean) => {
+            setGitRunning(false);
+        })
 
         return () => {
             socket.off("gitUpdate");
@@ -144,6 +147,7 @@ export const Git = () => {
                         <span style={{ marginLeft: '10px', color: '#cfcfcf' }}>{file}</span>
                     </div>
                 ))}
+                {/* <h4>Branches</h4> */}
             </div>
                 )}
             </div>

@@ -27,6 +27,7 @@ OnixIDE is a powerful collaborative online IDE built with Node.js, designed for 
 - **Real-time Collaboration**: Work with multiple users simultaneously on the same files with seamless updates and synchronization.
 - **Fully online**: Runs entirely in your browser.
 - **Draggable panels**: Drag panels for better visibility.
+- **Git integration**: Control git from a editor tab.
 ---
 
 ### Roadmap(Subject to change)

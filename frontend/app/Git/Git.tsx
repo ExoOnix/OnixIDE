@@ -3,8 +3,13 @@ import { useSocket } from "../Editor/Editor";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowUpFromLine, ArrowDownToLine, GitBranch } from 'lucide-react'
-
-
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover"
+import { PopoverClose } from "@radix-ui/react-popover";
+import { Label } from "@/components/ui/label";
 interface GitStatus {
     modified: string[];
     created: string[];
@@ -20,7 +25,7 @@ export const Git = () => {
     const [stagedFiles, setStagedFiles] = useState<string[]>([]);
     const [gitRunning, setGitRunning] = useState<boolean>(false);
     const [commitMessage, setCommitMessage] = useState<string>("");
-
+    const [createBranchName, setCreateBranchName] = useState<string>("")
     const [branches, setBranches] = useState<string[]>([]);
     const [currentBranch, setCurrentBranch] = useState<string>("");
 
@@ -84,7 +89,19 @@ export const Git = () => {
         }
     }
     function gitSwitchBranch(branchName: string) {
-        socket.emit("switchBranch", branchName)
+        if (gitRunning) {
+            socket.emit("switchBranch", branchName)
+        }
+    }
+    function deleteBranch(branchName: string) {
+        if (gitRunning) {
+            socket.emit("deleteBranch", branchName)
+        }
+    }
+    function createBranch(branchName: string) {
+        if (gitRunning && branchName.length > 0) {
+            socket.emit("createBranch", branchName)
+        }
     }
     return (
         <div style={{ display: 'flex', color: 'white', height: '100vh', flexDirection: 'column' }}>
@@ -155,7 +172,47 @@ export const Git = () => {
                         <span style={{ marginLeft: '10px', color: '#cfcfcf' }}>{file}</span>
                     </div>
                 ))}
-                <h4>Branches</h4>
+                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    <h4>Branches</h4>
+                                    <div style={{ background: 'none', border: 'none', color: 'limegreen', cursor: 'pointer', marginLeft: 'auto' }}>
+                                    <Popover>
+                                    <PopoverTrigger>
+                                        <button
+                                            disabled={!gitRunning}
+                                            style={{ background: 'none', border: 'none', color: 'limegreen', cursor: 'pointer' }}
+                                        >
+                                            +
+                                        </button>
+                                    </PopoverTrigger>
+                                        <PopoverContent>
+                                            <div className="grid grid-cols-3 items-center gap-4">
+                                                <Label>Name</Label>
+                                                <Input
+                                                    onChange={(e) => setCreateBranchName(e.target.value)}
+                                                    value={createBranchName}
+                                                    id="width"
+                                                    className="col-span-2 h-8"
+                                                />
+                                            </div>
+                                            <PopoverClose asChild>
+                                            <Button
+                                                onClick={() => {
+                                                    createBranch(createBranchName); // Emit createBranch event with the branch name
+                                                    setCreateBranchName(""); // Clear input after creation
+                                                }}
+                                                disabled={!gitRunning}
+                                                variant="secondary"
+                                                style={{ marginTop: "5px" }}
+                                            >
+                                                Create Branch
+                                            </Button>
+                                            </PopoverClose>
+                                        </PopoverContent>
+
+                                    </Popover>
+                                    </div>
+                                </div>
+                                
                             {branches.map((branch) => (
                                 <div style={{ display: 'flex', alignItems: 'center' }} key={branch}>
                                     <button
@@ -180,6 +237,20 @@ export const Git = () => {
                                         />
                                     </button>
                                     <span style={{ marginLeft: '10px', color: '#cfcfcf' }}>{branch}</span>
+                                    <div style={{ background: 'none', border: 'none', color: 'limegreen', cursor: 'pointer', marginLeft: 'auto' }}>
+
+                                        {currentBranch != branch && (
+                                            <button
+                                                disabled={!gitRunning}
+                                                onClick={() => deleteBranch(branch)}
+                                                style={{ background: 'none', border: 'none', color: 'tomato', cursor: 'pointer', marginRight: "5px" }}
+                                            >
+                                                -
+                                            </button>
+                                        )}
+
+                                    </div>
+                                    
                                 </div>
                             ))}
 

@@ -12,7 +12,7 @@ export async function generalChange(io: any) {
         }
         const status = await git.status();
         const branchSummary = await git.branch();
-        const branches = branchSummary.all;
+        const branches = branchSummary.all.filter(branch => !branch.startsWith('remotes/'));
         const currentBranch = branchSummary.current
         io.emit("gitUpdate", status, GitRunning, branches, currentBranch)
     } catch (err) {
@@ -61,4 +61,22 @@ export function GitRoutes(socket: Socket, io: any) {
             console.log("Error switching branch: ", err)
         }
     })
+    socket.on("createBranch", async (branchName) => {
+        try {
+            await await git.checkout(['-b', branchName]);
+            generalChange(io);
+        } catch (err) {
+            console.log("Error switching branch: ", err)
+        }
+    })
+    socket.on("deleteBranch", async (branchName) => {
+        try {
+            await git.branch(['-D', branchName]);
+            generalChange(io); // Update as needed for your app's state
+            console.log(`Branch '${branchName}' deleted successfully.`);
+        } catch (err) {
+            console.log("Error deleting branch: ", err);
+        }
+    });
+
 }

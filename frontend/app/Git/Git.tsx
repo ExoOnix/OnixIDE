@@ -48,7 +48,7 @@ export const Git = () => {
     }, [socket])
     useEffect(() => {
         socket.on("gitUpdate", (status: GitStatus, gitRunning: boolean, gitbranches: string[], gitcurrentBranch: string, gitCommits: Commit[]) => {
-            console.log("Status received:", status);
+            // console.log("Status received:", status);
 
             // Filter out staged files from modified files
             const modifiedNotStaged = (status.modified || []).filter(file =>

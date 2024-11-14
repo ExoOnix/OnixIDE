@@ -14,7 +14,24 @@ export async function generalChange(io: any) {
         const branchSummary = await git.branch();
         const branches = branchSummary.all.filter(branch => !branch.startsWith('remotes/'));
         const currentBranch = branchSummary.current
-        //Commits
+
+        const commitsCount = await git.revparse(['--is-inside-work-tree']).then(() => {
+            return git.revparse(['HEAD']);
+        }).then(() => {
+            // If we can resolve HEAD, it means there are commits
+            return true;
+        }).catch(() => {
+            // If there's an error resolving HEAD, there are no commits yet
+            return false;
+        });
+
+        if (!commitsCount) {
+            // Handle the case where there are no commits yet
+            io.emit("gitUpdate", status, GitRunning, branches, currentBranch, []);
+            return;
+        }
+
+        // Only proceed to log if there are commits
         const log = await git.log({ '--max-count': 10 });
 
         const commits = log.all.map(commit => ({
@@ -22,8 +39,6 @@ export async function generalChange(io: any) {
             message: commit.message,
             active: commit.hash === log.latest?.hash
         }));
-
-
         io.emit("gitUpdate", status, GitRunning, branches, currentBranch, commits)
     } catch (err) {
         io.emit("gitRunning", false)

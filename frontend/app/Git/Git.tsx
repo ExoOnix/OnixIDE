@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSocket } from "../Editor/Editor";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ArrowUpFromLine, ArrowDownToLine, GitBranch } from 'lucide-react'
+import { ArrowUpFromLine, ArrowDownToLine, GitBranch, Undo2, Redo, Clipboard } from 'lucide-react'
 import {
     Popover,
     PopoverContent,
@@ -10,6 +10,14 @@ import {
 } from "@/components/ui/popover"
 import { PopoverClose } from "@radix-ui/react-popover";
 import { Label } from "@/components/ui/label";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip"
+
+
 interface GitStatus {
     modified: string[];
     created: string[];
@@ -17,6 +25,11 @@ interface GitStatus {
     renamed: { from: string; to: string }[];
     staged: string[];
     not_added: string[];
+}
+interface Commit {
+    hash: string;
+    message: string;
+    active: boolean;
 }
 
 export const Git = () => {
@@ -28,13 +41,14 @@ export const Git = () => {
     const [createBranchName, setCreateBranchName] = useState<string>("")
     const [branches, setBranches] = useState<string[]>([]);
     const [currentBranch, setCurrentBranch] = useState<string>("");
+    const [commits, setCommits] = useState<Commit[]>([]);
 
     useEffect(() => {
         socket.emit('recieveGit')
     }, [socket])
     useEffect(() => {
-        socket.on("gitUpdate", (status: GitStatus, gitRunning: boolean, gitbranches: string[], gitcurrentBranch: string) => {
-            // console.log("Status received:", status);
+        socket.on("gitUpdate", (status: GitStatus, gitRunning: boolean, gitbranches: string[], gitcurrentBranch: string, gitCommits: Commit[]) => {
+            console.log("Status received:", status);
 
             // Filter out staged files from modified files
             const modifiedNotStaged = (status.modified || []).filter(file =>
@@ -55,6 +69,7 @@ export const Git = () => {
             setGitRunning(gitRunning);
             setUnstagedFiles(combinedUnstaged); // Only modified files not staged + not added
             setStagedFiles(status.staged || []); // Ensure staged is an array
+            setCommits(gitCommits);
         });
         socket.on("gitRunning", (gitRunning: boolean) => {
             setGitRunning(false);
@@ -251,6 +266,65 @@ export const Git = () => {
 
                                     </div>
                                     
+                                </div>
+                            ))}
+                            <h4>Commits</h4>
+
+                            {commits.map((commit) => (
+                                <div style={{ display: 'flex', alignItems: 'center' }} key={commit.hash}>
+                                    <span style={{ marginLeft: '10px', color: commit.active ? "limegreen" : '#cfcfcf'}}>{commit.message}</span>
+                                    <div style={{ background: 'none', border: 'none', cursor: 'pointer', marginLeft: 'auto' }}>
+
+                                        {!commit.active && (
+                                            <TooltipProvider>
+                                            <Tooltip>
+                                                    <TooltipTrigger>                                            <button
+                                                        disabled={!gitRunning}
+                                                        onClick={() => console.log("test")}
+                                                        style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: "5px" }}
+                                                    >
+                                                        <Undo2 style={{ width: "15px" }} />
+                                                    </button></TooltipTrigger>
+                                                <TooltipContent>
+                                                <p>Revert Commit</p>
+                                                </TooltipContent>
+                                            </Tooltip>
+                                            </TooltipProvider>
+
+                                        )}
+
+                                    </div>
+                                    {!commit.active && (
+                                    <TooltipProvider>
+                                        <Tooltip>
+                                            <TooltipTrigger>                                            <button
+                                                disabled={!gitRunning}
+                                                onClick={() => console.log("test")}
+                                                style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: "5px" }}
+                                            >
+                                                <Redo style={{ width: "15px" }} />
+                                            </button></TooltipTrigger>
+                                            <TooltipContent>
+                                                <p>Checkout Commit</p>
+                                            </TooltipContent>
+                                        </Tooltip>
+                                    </TooltipProvider>
+                                    )}
+                                    <TooltipProvider>
+                                        <Tooltip>
+                                            <TooltipTrigger>                                            <button
+                                                disabled={!gitRunning}
+                                                onClick={() => navigator.clipboard.writeText(commit.hash)}
+                                                style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: "5px" }}
+
+                                            >
+                                                <Clipboard style={{ width: "15px" }} />
+                                            </button></TooltipTrigger>
+                                            <TooltipContent>
+                                                <p>Copy Commit Hash</p>
+                                            </TooltipContent>
+                                        </Tooltip>
+                                    </TooltipProvider>
                                 </div>
                             ))}
 

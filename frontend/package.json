@@ -20,6 +20,7 @@
     "@radix-ui/react-popover": "^1.1.2",
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-switch": "^1.1.1",
+    "@radix-ui/react-tooltip": "^1.1.4",
     "@uiw/codemirror-extensions-langs": "^4.23.5",
     "@uiw/codemirror-theme-monokai": "^4.23.0",
     "@uiw/codemirror-theme-okaidia": "^4.23.0",

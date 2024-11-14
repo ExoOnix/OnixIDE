@@ -14,7 +14,17 @@ export async function generalChange(io: any) {
         const branchSummary = await git.branch();
         const branches = branchSummary.all.filter(branch => !branch.startsWith('remotes/'));
         const currentBranch = branchSummary.current
-        io.emit("gitUpdate", status, GitRunning, branches, currentBranch)
+        //Commits
+        const log = await git.log({ '--max-count': 10 });
+
+        const commits = log.all.map(commit => ({
+            hash: commit.hash,
+            message: commit.message,
+            active: commit.hash === log.latest?.hash
+        }));
+
+
+        io.emit("gitUpdate", status, GitRunning, branches, currentBranch, commits)
     } catch (err) {
         io.emit("gitRunning", false)
     }

@@ -104,4 +104,13 @@ export function GitRoutes(socket: Socket, io: any) {
         }
     });
 
+    socket.on("gitCheckout", async (commitHash) => {
+        try {
+            await git.checkout(commitHash);
+            generalChange(io);
+        } catch (err) {
+            console.log("Git Checkout Error:", err);
+        }
+    });
+
 }

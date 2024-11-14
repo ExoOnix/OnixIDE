@@ -118,6 +118,11 @@ export const Git = () => {
             socket.emit("createBranch", branchName)
         }
     }
+    function gitCheckout(commitHash: string) {
+        if (gitRunning) {
+            socket.emit("gitCheckout", commitHash)
+        }
+    }
     return (
         <div style={{ display: 'flex', color: 'white', height: '100vh', flexDirection: 'column' }}>
             <div style={{
@@ -274,42 +279,23 @@ export const Git = () => {
                                 <div style={{ display: 'flex', alignItems: 'center' }} key={commit.hash}>
                                     <span style={{ marginLeft: '10px', color: commit.active ? "limegreen" : '#cfcfcf'}}>{commit.message}</span>
                                     <div style={{ background: 'none', border: 'none', cursor: 'pointer', marginLeft: 'auto' }}>
-
                                         {!commit.active && (
                                             <TooltipProvider>
-                                            <Tooltip>
+                                                <Tooltip>
                                                     <TooltipTrigger>                                            <button
                                                         disabled={!gitRunning}
-                                                        onClick={() => console.log("test")}
+                                                        onClick={() => gitCheckout(commit.hash)}
                                                         style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: "5px" }}
                                                     >
-                                                        <Undo2 style={{ width: "15px" }} />
+                                                        <Redo style={{ width: "15px" }} />
                                                     </button></TooltipTrigger>
-                                                <TooltipContent>
-                                                <p>Revert Commit</p>
-                                                </TooltipContent>
-                                            </Tooltip>
+                                                    <TooltipContent>
+                                                        <p>Checkout Commit</p>
+                                                    </TooltipContent>
+                                                </Tooltip>
                                             </TooltipProvider>
-
                                         )}
-
                                     </div>
-                                    {!commit.active && (
-                                    <TooltipProvider>
-                                        <Tooltip>
-                                            <TooltipTrigger>                                            <button
-                                                disabled={!gitRunning}
-                                                onClick={() => console.log("test")}
-                                                style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: "5px" }}
-                                            >
-                                                <Redo style={{ width: "15px" }} />
-                                            </button></TooltipTrigger>
-                                            <TooltipContent>
-                                                <p>Checkout Commit</p>
-                                            </TooltipContent>
-                                        </Tooltip>
-                                    </TooltipProvider>
-                                    )}
                                     <TooltipProvider>
                                         <Tooltip>
                                             <TooltipTrigger>                                            <button

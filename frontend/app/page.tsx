@@ -10,6 +10,7 @@ import { resizeActiveTerminal } from './Terminal/Terminal';
 import { Tabs } from './Tabs/Tabs'
 import { useTabStore } from './stores/tabStore';
 import { Settings } from './Settings/Settings';
+import { Git } from './Git/Git';
 
 export default function Home() {
   const { filename, setFilename } = useFilenameStore();
@@ -94,7 +95,7 @@ export default function Home() {
         >
           {tab === "files" && <FileTree />}
           {tab === "settings" && <Settings />}
-
+          {tab === "git" && <Git />}
         </div>
 
         <div

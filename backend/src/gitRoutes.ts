@@ -2,7 +2,11 @@
 import { simpleGit, SimpleGit, CleanOptions } from 'simple-git';
 import { Socket } from 'socket.io';
 import { existsSync } from 'fs';
+
+
 const git: SimpleGit = simpleGit('./project');
+
+
 
 export async function generalChange(io: any) {
     try {
@@ -51,15 +55,27 @@ export function GitRoutes(socket: Socket, io: any) {
         generalChange(io)
     })
     socket.on("addFile", async (filePath) => {
-        await git.add(filePath)
+        try {
+            await git.add(filePath)
+        } catch (err) {
+            console.log(err)
+        }
         generalChange(io)
     })
     socket.on("resetFile", async (filePath) => {
-        await git.reset([filePath])
+        try {
+            await git.reset([filePath])
+        } catch (err) {
+            console.log(err)
+        }
         generalChange(io)
     })
     socket.on("gitCommit", async (message) => {
-        await git.commit(message);
+        try {
+            await git.commit(message);
+        } catch (err) {
+            console.log(err)
+        }
         generalChange(io)
     })
     socket.on("gitPush", async () => {

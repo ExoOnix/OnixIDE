@@ -16,7 +16,10 @@ export const Chat = () => {
             }}>
                 <span>OnixIDE</span>
             </div>
-            
+            <div style={{ padding: '10px' }}>
+                    <h4>Chat</h4>
+            </div>
+
         </div>
     );
 };

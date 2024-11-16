@@ -82,7 +82,8 @@ export const Chat = () => {
                         />
                         <Button
                             onClick={handleSetUsername} // Set the username when clicked
-                            className="text-white px-4 py-2"
+                            className="px-4 py-2"
+                            variant="secondary"
                         >
                             Set
                         </Button>
@@ -94,6 +95,7 @@ export const Chat = () => {
                         <Button
                             onClick={clearUsername}
                             className="text-red-500 hover:underline"
+                            variant="secondary"
                         >
                             Change Username
                         </Button>
@@ -124,7 +126,8 @@ export const Chat = () => {
                         />
                         <Button
                             onClick={handleSendMessage}
-                            className="text-white px-4 py-2"
+                            className="px-4 py-2"
+                            variant="secondary"
                         >
                             Send
                         </Button>

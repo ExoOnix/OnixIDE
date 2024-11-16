@@ -37,7 +37,7 @@ OnixIDE is a powerful collaborative online IDE built with Node.js, designed for 
 - [x] Multiple terminal tabs
 - [x] AI autocomplete 
 - [x] Git integration
-- [ ] Synchronized cursors and selections
+- [ ] Audio and chat
 
 
 ## Local Development Setup

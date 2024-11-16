@@ -120,11 +120,11 @@ export const Chat = () => {
                             placeholder="Type your message..."
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
-                            className="flex-1 bg-[#2e2e2e] text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                            className="flex-1 text-white"
                         />
                         <Button
                             onClick={handleSendMessage}
-                            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2"
+                            className="text-white px-4 py-2"
                         >
                             Send
                         </Button>

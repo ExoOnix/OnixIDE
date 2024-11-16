@@ -82,7 +82,7 @@ export const Chat = () => {
                         />
                         <Button
                             onClick={handleSetUsername} // Set the username when clicked
-                            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2"
+                            className="text-white px-4 py-2"
                         >
                             Set
                         </Button>

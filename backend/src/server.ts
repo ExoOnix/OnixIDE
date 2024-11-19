@@ -15,6 +15,9 @@ import chokidar from 'chokidar';
 import ollama from 'ollama';
 import dotenv from 'dotenv';
 import { GitRoutes, generalChange } from './gitRoutes.js';
+import { ChatRoutes } from './chatRoutes.js';
+
+
 
 const envPath = path.resolve('../.env');
 dotenv.config({ path: envPath })
@@ -648,6 +651,7 @@ io.on('connection', (socket: Socket) => {
 	});
 
 	GitRoutes(socket, io)
+	ChatRoutes(socket, io)
 
 	// Clean up the pty process on disconnect
 	socket.on('disconnect', () => {

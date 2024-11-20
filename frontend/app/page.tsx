@@ -12,6 +12,7 @@ import { useTabStore } from './stores/tabStore';
 import { Settings } from './Settings/Settings';
 import { Git } from './Git/Git';
 import { Chat } from './Chat/Chat';
+import Audio from './Audio/Audio';
 
 export default function Home() {
   const { filename, setFilename } = useFilenameStore();
@@ -98,6 +99,7 @@ export default function Home() {
           {tab === "settings" && <Settings />}
           {tab === "git" && <Git />}
           {tab === "chat" && <Chat />}
+          {tab === "audio" && <Audio />}
         </div>
 
         <div

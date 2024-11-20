@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { Folder, Settings, GitGraph, MessageCircleMore } from 'lucide-react';
+import { Folder, Settings, GitGraph, MessageCircleMore, Volume2 } from 'lucide-react';
 import { useTabStore } from "../stores/tabStore";
 
 export const Tabs = () => {
@@ -12,6 +12,7 @@ export const Tabs = () => {
             <button style={{color: "white"}} onClick={() => setTab("files")}><Folder /></button>
             <button style={{ color: "white" }} onClick={() => setTab("git")}><GitGraph /></button>
             <button style={{ color: "white" }} onClick={() => setTab("chat")}><MessageCircleMore /></button>
+            <button style={{ color: "white" }} onClick={() => setTab("audio")}><Volume2 /></button>
             <button style={{ color: "white" }} onClick={() => setTab("settings")}><Settings /></button>
         </div>
     );

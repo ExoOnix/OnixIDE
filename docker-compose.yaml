@@ -14,6 +14,7 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock"  # Access Docker socket
 
   backend:
+    image: exoticonix/onixide-backend
     build: ./backend
     restart: always
     labels:
@@ -23,6 +24,7 @@ services:
     env_file: ".env"
 
   frontend:
+    image: exoticonix/onixide-frontend
     build: 
       context: ./frontend
       args:

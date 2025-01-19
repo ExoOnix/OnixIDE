@@ -1,4 +1,4 @@
-FROM node:21 AS frontend-builder
+FROM node:22 AS frontend-builder
 ARG BACKEND_URI
 ARG USE_OLLAMA
 

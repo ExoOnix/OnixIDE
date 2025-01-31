@@ -45,6 +45,7 @@ export async function generalChange(io: any) {
         }));
         io.emit("gitUpdate", status, GitRunning, branches, currentBranch, commits)
     } catch (err) {
+        // console.log(err)
         io.emit("gitRunning", false)
     }
 }

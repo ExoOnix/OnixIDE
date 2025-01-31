@@ -252,7 +252,7 @@ export const FileTree = () => {
         formData.append('file', zipBlob, 'files.zip'); 
 
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URI}/api/upload/`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URI || ''}/api/upload/`, {
                 method: 'POST',
                 body: formData,
             });

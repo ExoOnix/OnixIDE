@@ -1,5 +1,4 @@
 FROM node:22 AS frontend-builder
-ARG BACKEND_URI
 
 WORKDIR /app
 
@@ -8,14 +7,15 @@ RUN yarn install
 
 COPY frontend . 
 
-ENV NEXT_PUBLIC_BACKEND_URI=$BACKEND_URI
+ENV NEXT_PUBLIC_BACKEND_URI=http://localhost:80
 ENV NEXT_PUBLIC_USE_OLLAMA=false
 
 RUN yarn build
 
 FROM nginx:stable
 
-RUN apt-get update && apt-get install -y curl build-essential \
+# software
+RUN apt-get update && apt-get install -y curl build-essential git python3-pip python3-venv \
     && curl -sL https://deb.nodesource.com/setup_22.x | bash - \
     && apt-get install -y nodejs
 

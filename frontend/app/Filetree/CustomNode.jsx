@@ -141,7 +141,7 @@ export const CustomNode = (props) => {
         const src = getNodePath(props.node.id, treeData);
 
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URI}/api/upload/${src}`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URI || ''}/api/upload/${src}`, {
                 method: 'POST',
                 body: formData,
             });

@@ -28,7 +28,6 @@ services:
     build: 
       context: ./frontend
       args:
-        BACKEND_URI: ${BACKEND_URI}
         USE_OLLAMA: ${USE_OLLAMA}
     restart: always
     labels:

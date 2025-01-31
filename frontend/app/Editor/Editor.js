@@ -109,7 +109,7 @@ const useSocket = () => {
     const socketRef = useRef(null);
 
     if (!socketRef.current) {
-        socketRef.current = io(`${process.env.NEXT_PUBLIC_BACKEND_URI}`, { path: '/ws' });
+        socketRef.current = io(`${process.env.NEXT_PUBLIC_BACKEND_URI || ''}`, { path: '/ws' });
     }
 
     return socketRef.current;
@@ -156,7 +156,7 @@ const EditorComponent = ({ filename, code, version, socket }) => {
         try {
             if (process.env.NEXT_PUBLIC_USE_OLLAMA == "true" && useSettingsStore.getState().AICompletions === true) {
                 const ext = filename.substring(filename.lastIndexOf('.') + 1).toLowerCase();
-                const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URI}/api/autocomplete/`, {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URI || ''}/api/autocomplete/`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",

@@ -35,8 +35,8 @@ RUN npm install
 
 COPY backend .
 RUN npm run build
+ENV PORT=4501
 
-
-EXPOSE 80
+EXPOSE 4500
 
 CMD ["bash", "-c", "nginx -g 'daemon off;' & npm run start"]
